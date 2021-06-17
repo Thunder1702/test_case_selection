@@ -7,7 +7,9 @@ import com.github.gumtreediff.tree.ITree;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
+import spoon.reflect.CtModelImpl;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.visitor.Filter;
 
 import java.util.List;
 
@@ -27,11 +29,14 @@ public class App {
         launcherNew.buildModel();
         CtModel modelNew = launcherNew.getModel();
 
+        modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
+        modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
+
         final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
 
-        //Difference between CtModel and CtElement?
-        ITree rootSpoonLeft = scanner.getTree((CtElement) modelOld);
-        ITree rootSpoonRight = scanner.getTree((CtElement) modelNew);
+        //Difference between CtModel and CtElement? --> look Strg+Click Document !!!
+        ITree rootSpoonLeft = scanner.getTree(modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
+        ITree rootSpoonRight = scanner.getTree(modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
 
         final MappingStore mappingsComp = new MappingStore();
 

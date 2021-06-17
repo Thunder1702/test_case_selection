@@ -1,4 +1,6 @@
-public class CalculatorImpl implements Calculator{
+package at.calc;
+
+public class CalculatorImpl implements Calculator {
 
     public CalculatorImpl(){
 

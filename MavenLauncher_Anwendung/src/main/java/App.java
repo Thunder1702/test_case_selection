@@ -49,6 +49,7 @@ public class App {
         List<Action> actions = actionGenerator.generate();
 
         actions.forEach(System.out::println);
+        //System.out.println(rootSpoonLeft.toTreeString());
 
         ArrayList<Action> inserts = new ArrayList<>();
         ArrayList<Action> deletes = new ArrayList<>();

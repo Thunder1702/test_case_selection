@@ -37,6 +37,7 @@ public class App {
 
         final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
 
+
         ITree rootSpoonLeft = scanner.getTree(modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
         ITree rootSpoonRight = scanner.getTree(modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
 
@@ -50,6 +51,12 @@ public class App {
 
         actions.forEach(System.out::println);
         //System.out.println(rootSpoonLeft.toTreeString());
+
+        for (Action a:actions) {
+            System.out.println("Hash: "+a.getNode().getHash());
+            System.out.println("Type: "+a.getNode().getType());
+            System.out.println("Label: "+a.getNode().getLabel());
+        }
 
         ArrayList<Action> inserts = new ArrayList<>();
         ArrayList<Action> deletes = new ArrayList<>();

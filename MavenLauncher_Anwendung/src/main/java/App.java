@@ -122,6 +122,8 @@ public class App {
                     //Search in rootSpoonRight for the Node with the NodeLabel from the Mappings
                     //First search in root
                     List<ITree> list = checkRoot(traverseTree,nodeFoundTypeInt,nodeFoundLabel);
+                    boolean found = traverseChildren(list,nodeFoundTypeInt,nodeFoundLabel);
+                    System.out.println("boolean found: "+found);
                 }
             }
         }
@@ -136,5 +138,27 @@ public class App {
         }else {
             return rootTree.getChildren();
         }
+    }
+    public static boolean traverseChildren(List<ITree> childrenList,int checkType, String checkLabel){
+        int listSize = childrenList.size();
+        boolean found = false;
+
+        for(int i = 0; i<listSize;i++){
+            if(childrenList.get(i).getType()==checkType && childrenList.get(i).getLabel().equals(checkLabel)){
+                System.out.println("___________Found_____________");
+                System.out.println("Type: "+childrenList.get(i).getType());
+                System.out.println("Label: "+childrenList.get(i).getLabel());
+                System.out.println(childrenList.get(i).toTreeString());
+                System.out.println(childrenList.get(i).toString());
+                found = true;
+                return found;
+            }else {
+                if(childrenList.get(i).getChildren().size() != 0){
+                    traverseChildren(childrenList.get(i).getChildren(),checkType,checkLabel);
+                }
+            }
+        }
+
+        return found;
     }
 }

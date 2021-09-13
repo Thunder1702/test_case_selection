@@ -18,8 +18,8 @@ import java.util.Set;
 
 public class App {
     public static void main(String[] args) {
-        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\MavenLauncher_Aenderungen_feststellen\\Test_Projekte\\Calculator_alt";
-        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\MavenLauncher_Aenderungen_feststellen\\Test_Projekte\\Calculator_neu";
+        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc";
+        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc_NEU";
 
         MavenLauncher launcherOld = new MavenLauncher(projectOldPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
         MavenLauncher launcherNew = new MavenLauncher(projectNewPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
@@ -87,6 +87,18 @@ public class App {
             String label = a.getNode().getLabel();
             String nodeLabel = type+"@@"+label;
             System.out.println("NodeLabel: "+nodeLabel);
+
+            //Get Mappings from mappingstore as Object
+//            System.out.println(maps.size());
+            Object[] mappings = maps.toArray();
+            for(Object o:mappings){
+                System.out.println(o.toString());
+                String object = o.toString();
+
+                //Check if mapping includes NodeLabel from actions
+
+
+            }
         }
 
 

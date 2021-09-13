@@ -1,6 +1,7 @@
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.matchers.CompositeMatchers;
+import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
@@ -13,6 +14,7 @@ import spoon.reflect.visitor.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class App {
     public static void main(String[] args) {
@@ -51,12 +53,13 @@ public class App {
 
         actions.forEach(System.out::println);
         //System.out.println(rootSpoonLeft.toTreeString());
-
+        System.out.println("____________Information of actions_________");
         for (Action a:actions) {
             System.out.println("Hash: "+a.getNode().getHash());
             System.out.println("Type: "+a.getNode().getType());
             System.out.println("Label: "+a.getNode().getLabel());
         }
+        System.out.println("___________Information End____________");
 
         ArrayList<Action> inserts = new ArrayList<>();
         ArrayList<Action> deletes = new ArrayList<>();
@@ -74,6 +77,17 @@ public class App {
                 updates.add(action);
             }
         });
+
+        //get Mappings from MappingStore
+        Set<Mapping> maps = matcher.getMappings().asSet();
+        //Check Mapping NodeLabel with Action->Node->NodeLabel
+        for (Action a: actions){
+            //Extract the NodeLabel from every action
+            int type = a.getNode().getType();
+            String label = a.getNode().getLabel();
+            String nodeLabel = type+"@@"+label;
+            System.out.println("NodeLabel: "+nodeLabel);
+        }
 
 
 

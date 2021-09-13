@@ -114,11 +114,27 @@ public class App {
                     System.out.println("Lenght: "+rootSpoonRight.getLength());
                     System.out.println("__________rootSpoonRight Information End____________");
                     //initialize for usage
+                    ITree traverseTree = rootSpoonRight;
+                    String nodeFoundType = nodeFound.split("@@")[0];
+                    int nodeFoundTypeInt = Integer.parseInt(nodeFoundType);
+                    String nodeFoundLabel = nodeFound.split("@@")[1];
+
+                    //Search in rootSpoonRight for the Node with the NodeLabel from the Mappings
+                    //First search in root
+                    List<ITree> list = checkRoot(traverseTree,nodeFoundTypeInt,nodeFoundLabel);
                 }
             }
         }
 
 
 
+    }
+    public static List<ITree> checkRoot(ITree rootTree, int checkType, String checkLabel){
+        if(rootTree.getType()==checkType && rootTree.getLabel().equals(checkLabel)){
+            System.out.println("Found Node in Root.");
+            return null;
+        }else {
+            return rootTree.getChildren();
+        }
     }
 }

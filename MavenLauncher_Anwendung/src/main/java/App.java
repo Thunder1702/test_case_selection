@@ -92,12 +92,29 @@ public class App {
 //            System.out.println(maps.size());
             Object[] mappings = maps.toArray();
             for(Object o:mappings){
-                System.out.println(o.toString());
+//                System.out.println(o.toString());
                 String object = o.toString();
 
                 //Check if mapping includes NodeLabel from actions
 
-
+                boolean check = object.contains(nodeLabel);
+//                System.out.println("Check for NodeLabel: "+object.contains(nodeLabel));
+                if(check){
+                    //if true, output the mapped NodeLable from other Node
+                    System.out.println(o);
+                    System.out.println("Check for NodeLabel: "+object.contains(nodeLabel));
+                    String nodeFound =object.split(",")[1];
+                    nodeFound = nodeFound.replace(")","");
+                    System.out.println("-----------NodeFound: "+nodeFound);
+                    //Outputs information --> depth is important
+                    System.out.println("__________rootSpoonRight Information____________");
+                    System.out.println("Size: "+rootSpoonRight.getSize());
+                    System.out.println("Depth: "+rootSpoonRight.getDepth());
+                    System.out.println("Height: "+rootSpoonRight.getHeight());
+                    System.out.println("Lenght: "+rootSpoonRight.getLength());
+                    System.out.println("__________rootSpoonRight Information End____________");
+                    //initialize for usage
+                }
             }
         }
 

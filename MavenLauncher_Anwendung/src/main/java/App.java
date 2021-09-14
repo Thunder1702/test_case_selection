@@ -9,12 +9,9 @@ import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
 import spoon.reflect.CtModelImpl;
-import spoon.reflect.declaration.CtElement;
-import spoon.reflect.visitor.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class App {
     public static void main(String[] args) {
@@ -56,14 +53,9 @@ public class App {
 
         actions.forEach(System.out::println);
 
-        for (Action a:actions) {
-            System.out.println("__________Action Information__________");
-            System.out.println("Hash: "+a.getNode().getHash());
-            System.out.println("Type: "+a.getNode().getType());
-            System.out.println("Label: "+a.getNode().getLabel());
-            System.out.println("__________Action Information End__________");
-        }
+        outputActionInformation(actions);
 
+//Extract types of actions
         ArrayList<Action> inserts = new ArrayList<>();
         ArrayList<Action> deletes = new ArrayList<>();
         ArrayList<Action> updates = new ArrayList<>();
@@ -155,6 +147,15 @@ public class App {
                     traverseChildren(childrenList.get(i).getChildren(),checkType,checkLabel);
                 }
             }
+        }
+    }
+    public static void outputActionInformation (List<Action> actions){
+        for (Action a:actions) {
+            System.out.println("__________Action Information__________");
+            System.out.println("Hash: "+a.getNode().getHash());
+            System.out.println("Type: "+a.getNode().getType());
+            System.out.println("Label: "+a.getNode().getLabel());
+            System.out.println("__________Action Information End__________");
         }
     }
 }

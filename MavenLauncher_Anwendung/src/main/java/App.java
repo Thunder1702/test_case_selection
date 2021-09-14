@@ -55,14 +55,14 @@ public class App {
         List<Action> actions = actionGenerator.generate();
 
         actions.forEach(System.out::println);
-        //System.out.println(rootSpoonLeft.toTreeString());
-        System.out.println("____________Information of actions_________");
+
         for (Action a:actions) {
+            System.out.println("__________Action Information__________");
             System.out.println("Hash: "+a.getNode().getHash());
             System.out.println("Type: "+a.getNode().getType());
             System.out.println("Label: "+a.getNode().getLabel());
+            System.out.println("__________Action Information End__________");
         }
-        System.out.println("___________Information End____________");
 
         ArrayList<Action> inserts = new ArrayList<>();
         ArrayList<Action> deletes = new ArrayList<>();

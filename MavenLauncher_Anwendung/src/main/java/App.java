@@ -82,40 +82,33 @@ public class App {
         });
 
         //get Mappings from MappingStore
-        Set<Mapping> maps = matcher.getMappings().asSet();
         //Check Mapping NodeLabel with Action->Node->NodeLabel
-        for (Action a: actions){
-            //Extract the NodeLabel from every action
+        for (Action a:actions) {
+            //Extract the NodeLabel from actions
             int type = a.getNode().getType();
             String label = a.getNode().getLabel();
-            String nodeLabel = type+"@@"+label;
+            String nodeLabel = a.getNode().toShortString();
             System.out.println("NodeLabel: "+nodeLabel);
 
-            //Get Mappings from mappingstore as Object
-//            System.out.println(maps.size());
-            Object[] mappings = maps.toArray();
-            for(Object o:mappings){
-//                System.out.println(o.toString());
-                String object = o.toString();
-
+            //Get Mappings from MappingStore
+            for (Mapping m:matcher.getMappings()) {
                 //Check if mapping includes NodeLabel from actions
+//                System.out.println(m);
+//                System.out.println("Check for NodeLabel: "+m.getFirst().toShortString().equals(nodeLabel));
+                String nodeFound = "";
+                if(m.getFirst().toShortString().equals(nodeLabel)){
+                    System.out.println("Mapping: ("+m.getFirst().toShortString().concat(","+m.getSecond().toShortString()+")"));
+                    //if true, output the mapped NodeLabel from the other Node
+                    nodeFound = m.getSecond().toShortString();
+                    System.out.println("MappingNodeFound: "+nodeFound);
 
-                boolean check = object.contains(nodeLabel);
-//                System.out.println("Check for NodeLabel: "+object.contains(nodeLabel));
-                if(check){
-                    //if true, output the mapped NodeLable from other Node
-                    System.out.println(o);
-                    System.out.println("Check for NodeLabel: "+object.contains(nodeLabel));
-                    String nodeFound =object.split(",")[1];
-                    nodeFound = nodeFound.replace(")","");
-                    System.out.println("-----------NodeFound: "+nodeFound);
-                    //Outputs information --> depth is important
-                    System.out.println("__________rootSpoonRight Information____________");
+/*                  Outputs information --> depth is important
                     System.out.println("Size: "+rootSpoonRight.getSize());
                     System.out.println("Depth: "+rootSpoonRight.getDepth());
                     System.out.println("Height: "+rootSpoonRight.getHeight());
-                    System.out.println("Lenght: "+rootSpoonRight.getLength());
-                    System.out.println("__________rootSpoonRight Information End____________");
+                    System.out.println("Length: "+rootSpoonRight.getLength());
+ */
+
                     //initialize for usage
                     ITree traverseTree = rootSpoonRight;
                     String nodeFoundType = nodeFound.split("@@")[0];
@@ -124,6 +117,11 @@ public class App {
 
                     //Search in rootSpoonRight for the Node with the NodeLabel from the Mappings
                     //First search in root
+                    System.out.println("________Search for Node__________");
+
+                    /* Call Graph !!!*/
+
+
                     List<ITree> list = checkRoot(traverseTree,nodeFoundTypeInt,nodeFoundLabel);
                     traverseChildren(list,nodeFoundTypeInt,nodeFoundLabel);
                 }

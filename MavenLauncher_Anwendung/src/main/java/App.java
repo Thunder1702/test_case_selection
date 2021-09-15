@@ -1,7 +1,6 @@
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.matchers.CompositeMatchers;
-import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
@@ -11,7 +10,9 @@ import spoon.reflect.CtModel;
 import spoon.reflect.CtModelImpl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class App {
     public static void main(String[] args) {
@@ -137,12 +138,26 @@ public class App {
         int typeReturnDatatype = 69274153;
 
         for (Action a:actions) {
-            String node = a.getNode().toShortString();
-            String parentNode = a.getNode().getParent().toShortString();
-            System.out.println("Node: "+node);
-            System.out.println("ParentNode: "+parentNode);
+            System.out.println("Node: "+a.getNode().toShortString());
+            System.out.println("ParentNode: "+a.getNode().getParent().toShortString());
+            //TreeSet??????????
+            Set<ITree> checkForTestsList = new HashSet<>();
 
             if(a.toString().startsWith("INS")){
+                //Exclude packages --> only Method changes
+                if(true!=(a.getNode().getType()==typePackage || a.getNode().getParent().getType()==typePackage)){
+                    //If Node is Method
+                    if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
+                        List<ITree> childrenList = checkRoot(rootSpoonRight,a.getNode().getType(),a.getNode().getLabel());
+                        traverseChildren(childrenList,a.getNode().getType(),a.getNode().getLabel());
+                    }else if(a.getNode().getType()!=typeMethod){
+                        //search for parent(übergeordnete) method or class (if no parent method exists)
+                        ITree parentForSearch = searchParentMethodOrClass(a.getNode());
+                        System.out.println("Test search Parent: "+ parentForSearch.toShortString());
+                        List<ITree> childrenList = checkRoot(rootSpoonRight,parentForSearch.getType(),parentForSearch.getLabel());
+                        traverseChildren(childrenList,parentForSearch.getType(),parentForSearch.getLabel());
+                    }
+                }
 
             }else if(a.toString().startsWith("MOV")){
 
@@ -169,12 +184,13 @@ public class App {
         int listSize = childrenList.size();
 
         for(int i = 0; i<listSize;i++){
-            if(childrenList.get(i).getType()==checkType && childrenList.get(i).getLabel().equals(checkLabel)){
+            if(childrenList.get(i).getType()==checkType && childrenList.get(i).getLabel().equals(checkLabel) && childrenList.get(i).getParent().getType()==65190232){
                 System.out.println("________Found:");
                 System.out.println("Type: "+childrenList.get(i).getType());
                 System.out.println("Label: "+childrenList.get(i).getLabel());
                 System.out.println(childrenList.get(i).toTreeString());
                 System.out.println(childrenList.get(i).toShortString());
+                System.out.println("Parent: "+childrenList.get(i).getParent().toShortString());
                 System.out.println("ID of Children: "+childrenList.get(i).getId());
             }else {
                 if(childrenList.get(i).getChildren().size() != 0){
@@ -182,6 +198,12 @@ public class App {
                 }
             }
         }
+    }
+    public static ITree searchParentMethodOrClass(ITree node){
+     if(node.getParent().getType()==-1993687807 || node.getParent().getType()==65190232){
+         return node.getParent();
+     }
+     return searchParentMethodOrClass(node.getParent());
     }
     public static void outputActionInformation (List<Action> actions){
         for (Action a:actions) {

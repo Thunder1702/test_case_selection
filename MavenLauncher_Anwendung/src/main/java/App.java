@@ -15,11 +15,11 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc";
-        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc_NEU";
+//        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc";
+//        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc_NEU";
 
-//        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\MavenLauncher_Aenderungen_feststellen\\Test_Projekte\\Calculator_alt";
-//        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\MavenLauncher_Aenderungen_feststellen\\Test_Projekte\\Calculator_neu";
+        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\MavenLauncher_Aenderungen_feststellen\\Test_Projekte\\Calculator_alt";
+        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\MavenLauncher_Aenderungen_feststellen\\Test_Projekte\\Calculator_neu";
 
         MavenLauncher launcherOld = new MavenLauncher(projectOldPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
         MavenLauncher launcherNew = new MavenLauncher(projectNewPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
@@ -52,8 +52,9 @@ public class App {
         List<Action> actions = actionGenerator.generate();
 
         actions.forEach(System.out::println);
+        System.out.println("______________________________________________________________");
 
-        outputActionInformation(actions);
+//        outputActionInformation(actions);
 
 //Extract types of actions
         ArrayList<Action> inserts = new ArrayList<>();
@@ -72,7 +73,7 @@ public class App {
                 updates.add(action);
             }
         });
-
+/*
         //get Mappings from MappingStore
         //Check Mapping NodeLabel with Action->Node->NodeLabel
         for (Action a:actions) {
@@ -94,12 +95,12 @@ public class App {
                     nodeFound = m.getSecond().toShortString();
                     System.out.println("MappingNodeFound: "+nodeFound);
 
-/*                  Outputs information --> depth is important
-                    System.out.println("Size: "+rootSpoonRight.getSize());
-                    System.out.println("Depth: "+rootSpoonRight.getDepth());
-                    System.out.println("Height: "+rootSpoonRight.getHeight());
-                    System.out.println("Length: "+rootSpoonRight.getLength());
- */
+//                    Outputs information --> depth is important
+//                    System.out.println("Size: "+rootSpoonRight.getSize());
+//                    System.out.println("Depth: "+rootSpoonRight.getDepth());
+//                    System.out.println("Height: "+rootSpoonRight.getHeight());
+//                    System.out.println("Length: "+rootSpoonRight.getLength());
+
 
                     //initialize for usage
                     ITree traverseTree = rootSpoonRight;
@@ -111,13 +112,34 @@ public class App {
                     //First search in root
                     System.out.println("________Search for Node__________");
 
-                    /* Call Graph !!!*/
+                    // Call Graph !!!
 
 
                     List<ITree> list = checkRoot(traverseTree,nodeFoundTypeInt,nodeFoundLabel);
                     traverseChildren(list,nodeFoundTypeInt,nodeFoundLabel);
                 }
             }
+        }
+*/
+        // ____________________________________________________________________________________
+        //Neue Variante für Code von oben
+
+        for (Action a:actions) {
+            String node = a.getNode().toShortString();
+            String parentNode = a.getNode().getParent().toShortString();
+            System.out.println("Node: "+node);
+            System.out.println("ParentNode: "+parentNode);
+
+            if(a.toString().startsWith("INS")){
+
+            }else if(a.toString().startsWith("MOV")){
+
+            }else if(a.toString().startsWith("UPD")){
+
+            }else if(a.toString().startsWith("DEL")){
+
+            }
+
         }
 
 

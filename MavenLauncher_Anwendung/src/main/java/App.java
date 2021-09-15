@@ -124,6 +124,18 @@ public class App {
         // ____________________________________________________________________________________
         //Neue Variante für Code von oben
 
+        int typeClass = 65190232;
+        int typeInterface = -1788375783;
+        int typePackage = 857590822;
+        int typeMethod = -1993687807;
+        int typeComment = -1679915457;
+        int typeParameter = -33653874;
+        int typeDatatype = 188328733;
+        int typeVariable = 67875034;
+        int typeValue = 1847113871;
+        int typeReturn = -1850529456;
+        int typeReturnDatatype = 69274153;
+
         for (Action a:actions) {
             String node = a.getNode().toShortString();
             String parentNode = a.getNode().getParent().toShortString();

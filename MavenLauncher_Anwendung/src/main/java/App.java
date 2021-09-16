@@ -186,10 +186,26 @@ public class App {
             }else if(a.toString().startsWith("UPD")){
                 //Exclude packages --> only Method changes
                 if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
+                    ITree mappingNode = null;
                     //If Node is Method
                     if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
+                        for(Mapping m:matcher.getMappings()){
+                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
+                                mappingNode = m.getSecond();
+                            }
+                        }
+                        checkForTestsList.add(traverseTree(rootSpoonRight,mappingNode));
                         //If Node is not a Method
                     }else if(a.getNode().getType()!=typeMethod){
+                        for(Mapping m:matcher.getMappings()){
+                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
+                                mappingNode = m.getSecond();
+                            }
+                        }
+                        ITree parent = searchParentMethodOrClass(mappingNode);
+                        System.out.println("Test search Parent: "+ parent.toShortString());
+                        checkForTestsList.add(traverseTree(rootSpoonRight,parent));
+
 
                     }
                 }

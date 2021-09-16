@@ -150,37 +150,30 @@ public class App {
                 if(true!=(a.getNode().getType()==typePackage || a.getNode().getParent().getType()==typePackage)){
                     //If Node is Method
                     if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
-
-                        for (ITree t:rootSpoonRight.breadthFirst()) {
-                            if(t.getType()==a.getNode().getType() && t.getLabel().equals(a.getNode().getLabel()) && t.getParent().getType()==typeClass){
-                                System.out.println("______________________Found__________________________");
-                                System.out.println("___________________"+t.toShortString()+"______________________");
-                                System.out.println("_______________________________________________________________");
-                                checkForTestsList.add(t);
-                            }
-
-                        }
-
-//                        List<ITree> childrenList = checkRoot(rootSpoonRight,a.getNode().getType(),a.getNode().getLabel());
-//                        traverseChildren(childrenList,a.getNode().getType(),a.getNode().getLabel());
+                        checkForTestsList.add(traverseTree(rootSpoonRight,a.getNode()));
+//                        for (ITree t:rootSpoonRight.breadthFirst()) {
+//                            if(t.getType()==a.getNode().getType() && t.getLabel().equals(a.getNode().getLabel()) && t.getParent().getType()==typeClass){
+//                                System.out.println("______________________Found__________________________");
+//                                System.out.println("___________________"+t.toShortString()+"______________________");
+//                                System.out.println("_______________________________________________________________");
+//                                checkForTestsList.add(t);
+//                            }
+//                        }
                         //If Node is not a Method
                     }else if(a.getNode().getType()!=typeMethod){
                         //search for parent(übergeordnete) method or class (if no parent method exists)
                         ITree parentForSearch = searchParentMethodOrClass(a.getNode());
                         System.out.println("Test search Parent: "+ parentForSearch.toShortString());
+                        checkForTestsList.add(traverseTree(rootSpoonRight,parentForSearch));
 
-                        for (ITree t:rootSpoonRight.breadthFirst()) {
-                            if(t.getType()==parentForSearch.getType() && t.getLabel().equals(parentForSearch.getLabel()) && t.getParent().getType()==typeClass){
-                                System.out.println("______________________Found__________________________");
-                                System.out.println("___________________"+t.toShortString()+"______________________");
-                                System.out.println("_______________________________________________________________");
-                                checkForTestsList.add(t);
-                            }
-
-                        }
-
-//                        List<ITree> childrenList = checkRoot(rootSpoonRight,parentForSearch.getType(),parentForSearch.getLabel());
-//                        traverseChildren(childrenList,parentForSearch.getType(),parentForSearch.getLabel());
+//                        for (ITree t:rootSpoonRight.breadthFirst()) {
+//                            if(t.getType()==parentForSearch.getType() && t.getLabel().equals(parentForSearch.getLabel()) && t.getParent().getType()==typeClass){
+//                                System.out.println("______________________Found__________________________");
+//                                System.out.println("___________________"+t.toShortString()+"______________________");
+//                                System.out.println("_______________________________________________________________");
+//                                checkForTestsList.add(t);
+//                            }
+//                        }
                     }
                 }
 
@@ -193,7 +186,9 @@ public class App {
             }
             num++;
         }
+
         System.out.println("______________________________________________________________________________________");
+        checkForTestsList.remove(null);
         System.out.println(checkForTestsList.size());
         for (ITree t:checkForTestsList) {
             System.out.println(t.toShortString());
@@ -244,5 +239,16 @@ public class App {
             System.out.println("Label: "+a.getNode().getLabel());
             System.out.println("__________Action Information End__________");
         }
+    }
+    public static ITree traverseTree(ITree tree,ITree searchNode){
+        for (ITree t:tree.breadthFirst()) {
+            if(t.getType()==searchNode.getType() && t.getLabel().equals(searchNode.getLabel()) && t.getParent().getType()==65190232){
+                System.out.println("______________________Found__________________________");
+                System.out.println("___________________"+t.toShortString()+"______________________");
+                System.out.println("_______________________________________________________________");
+                return t;
+            }
+        }
+        return null;
     }
 }

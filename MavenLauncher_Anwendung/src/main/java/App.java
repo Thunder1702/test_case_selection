@@ -1,6 +1,7 @@
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.matchers.CompositeMatchers;
+import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
@@ -96,13 +97,6 @@ public class App {
                     nodeFound = m.getSecond().toShortString();
                     System.out.println("MappingNodeFound: "+nodeFound);
 
-//                    Outputs information --> depth is important
-//                    System.out.println("Size: "+rootSpoonRight.getSize());
-//                    System.out.println("Depth: "+rootSpoonRight.getDepth());
-//                    System.out.println("Height: "+rootSpoonRight.getHeight());
-//                    System.out.println("Length: "+rootSpoonRight.getLength());
-
-
                     //initialize for usage
                     ITree traverseTree = rootSpoonRight;
                     String nodeFoundType = nodeFound.split("@@")[0];
@@ -147,41 +141,69 @@ public class App {
 
             if(a.toString().startsWith("INS")){
                 //Exclude packages --> only Method changes
-                if(true!=(a.getNode().getType()==typePackage || a.getNode().getParent().getType()==typePackage)){
+                if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
                     //If Node is Method
                     if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
                         checkForTestsList.add(traverseTree(rootSpoonRight,a.getNode()));
-//                        for (ITree t:rootSpoonRight.breadthFirst()) {
-//                            if(t.getType()==a.getNode().getType() && t.getLabel().equals(a.getNode().getLabel()) && t.getParent().getType()==typeClass){
-//                                System.out.println("______________________Found__________________________");
-//                                System.out.println("___________________"+t.toShortString()+"______________________");
-//                                System.out.println("_______________________________________________________________");
-//                                checkForTestsList.add(t);
-//                            }
-//                        }
                         //If Node is not a Method
                     }else if(a.getNode().getType()!=typeMethod){
                         //search for parent(übergeordnete) method or class (if no parent method exists)
                         ITree parentForSearch = searchParentMethodOrClass(a.getNode());
                         System.out.println("Test search Parent: "+ parentForSearch.toShortString());
                         checkForTestsList.add(traverseTree(rootSpoonRight,parentForSearch));
-
-//                        for (ITree t:rootSpoonRight.breadthFirst()) {
-//                            if(t.getType()==parentForSearch.getType() && t.getLabel().equals(parentForSearch.getLabel()) && t.getParent().getType()==typeClass){
-//                                System.out.println("______________________Found__________________________");
-//                                System.out.println("___________________"+t.toShortString()+"______________________");
-//                                System.out.println("_______________________________________________________________");
-//                                checkForTestsList.add(t);
-//                            }
-//                        }
                     }
                 }
 
             }else if(a.toString().startsWith("MOV")){
+                //Exclude packages --> only Method changes
+                if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
+                    ITree nodeForSearchInTree = null;
+                    //If Node is Method
+                    if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
+                        for (Mapping m:matcher.getMappings()) {
+                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
+                                nodeForSearchInTree = m.getSecond();
+                            }
+                        }
+                        ITree parentForSearch = searchParentMethodOrClass(nodeForSearchInTree);
+                        System.out.println("Test search Parent: "+ parentForSearch.toShortString());
+                        checkForTestsList.add(traverseTree(rootSpoonRight,parentForSearch));
+                        //If Node is not a Method
+                    }else if(a.getNode().getType()!=typeMethod){
+                        for(Mapping m:matcher.getMappings()){
+                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
+                                nodeForSearchInTree = m.getSecond();
+                            }
+                        }
+                        if(nodeForSearchInTree.getType()!=typeClass && nodeForSearchInTree.getType()!=typeInterface){
+                            ITree parent = searchParentMethodOrClass(nodeForSearchInTree);
+                            System.out.println("Test search Parent: "+ parent.toShortString());
+                            checkForTestsList.add(traverseTree(rootSpoonRight,parent));
+                        }
+                    }
+                }
 
             }else if(a.toString().startsWith("UPD")){
+                //Exclude packages --> only Method changes
+                if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
+                    //If Node is Method
+                    if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
+                        //If Node is not a Method
+                    }else if(a.getNode().getType()!=typeMethod){
+
+                    }
+                }
 
             }else if(a.toString().startsWith("DEL")){
+                //Exclude packages --> only Method changes
+                if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
+                    //If Node is Method
+                    if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
+                        //If Node is not a Method
+                    }else if(a.getNode().getType()!=typeMethod){
+
+                    }
+                }
 
             }
             num++;

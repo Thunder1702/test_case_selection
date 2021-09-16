@@ -137,25 +137,50 @@ public class App {
         int typeReturn = -1850529456;
         int typeReturnDatatype = 69274153;
 
+        //TreeSet??????????
+        Set<ITree> checkForTestsList = new HashSet<>();
+        int num = 0;
+
         for (Action a:actions) {
-            System.out.println("Node: "+a.getNode().toShortString());
-            System.out.println("ParentNode: "+a.getNode().getParent().toShortString());
-            //TreeSet??????????
-            Set<ITree> checkForTestsList = new HashSet<>();
+            System.out.println(num+") Node: "+a.getNode().toShortString());
+            System.out.println(num+") ParentNode: "+a.getNode().getParent().toShortString());
 
             if(a.toString().startsWith("INS")){
                 //Exclude packages --> only Method changes
                 if(true!=(a.getNode().getType()==typePackage || a.getNode().getParent().getType()==typePackage)){
                     //If Node is Method
                     if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
-                        List<ITree> childrenList = checkRoot(rootSpoonRight,a.getNode().getType(),a.getNode().getLabel());
-                        traverseChildren(childrenList,a.getNode().getType(),a.getNode().getLabel());
+
+                        for (ITree t:rootSpoonRight.breadthFirst()) {
+                            if(t.getType()==a.getNode().getType() && t.getLabel().equals(a.getNode().getLabel()) && t.getParent().getType()==typeClass){
+                                System.out.println("______________________Found__________________________");
+                                System.out.println("___________________"+t.toShortString()+"______________________");
+                                System.out.println("_______________________________________________________________");
+                                checkForTestsList.add(t);
+                            }
+
+                        }
+
+//                        List<ITree> childrenList = checkRoot(rootSpoonRight,a.getNode().getType(),a.getNode().getLabel());
+//                        traverseChildren(childrenList,a.getNode().getType(),a.getNode().getLabel());
+                        //If Node is not a Method
                     }else if(a.getNode().getType()!=typeMethod){
                         //search for parent(übergeordnete) method or class (if no parent method exists)
                         ITree parentForSearch = searchParentMethodOrClass(a.getNode());
                         System.out.println("Test search Parent: "+ parentForSearch.toShortString());
-                        List<ITree> childrenList = checkRoot(rootSpoonRight,parentForSearch.getType(),parentForSearch.getLabel());
-                        traverseChildren(childrenList,parentForSearch.getType(),parentForSearch.getLabel());
+
+                        for (ITree t:rootSpoonRight.breadthFirst()) {
+                            if(t.getType()==parentForSearch.getType() && t.getLabel().equals(parentForSearch.getLabel()) && t.getParent().getType()==typeClass){
+                                System.out.println("______________________Found__________________________");
+                                System.out.println("___________________"+t.toShortString()+"______________________");
+                                System.out.println("_______________________________________________________________");
+                                checkForTestsList.add(t);
+                            }
+
+                        }
+
+//                        List<ITree> childrenList = checkRoot(rootSpoonRight,parentForSearch.getType(),parentForSearch.getLabel());
+//                        traverseChildren(childrenList,parentForSearch.getType(),parentForSearch.getLabel());
                     }
                 }
 
@@ -166,7 +191,13 @@ public class App {
             }else if(a.toString().startsWith("DEL")){
 
             }
-
+            num++;
+        }
+        System.out.println("______________________________________________________________________________________");
+        System.out.println(checkForTestsList.size());
+        for (ITree t:checkForTestsList) {
+            System.out.println(t.toShortString());
+            System.out.println(t.getParent().toShortString());
         }
 
 
@@ -194,7 +225,7 @@ public class App {
                 System.out.println("ID of Children: "+childrenList.get(i).getId());
             }else {
                 if(childrenList.get(i).getChildren().size() != 0){
-                    traverseChildren(childrenList.get(i).getChildren(),checkType,checkLabel);
+                      traverseChildren(childrenList.get(i).getChildren(),checkType,checkLabel);
                 }
             }
         }

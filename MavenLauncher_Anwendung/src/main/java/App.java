@@ -5,6 +5,7 @@ import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
+import com.github.gumtreediff.tree.TreeContext;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
@@ -20,8 +21,8 @@ public class App {
 //        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc";
 //        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc_NEU";
 
-        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\MavenLauncher_Aenderungen_feststellen\\Test_Projekte\\Calculator_alt";
-        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\MavenLauncher_Aenderungen_feststellen\\Test_Projekte\\Calculator_neu";
+        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
+        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
 
         MavenLauncher launcherOld = new MavenLauncher(projectOldPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
         MavenLauncher launcherNew = new MavenLauncher(projectNewPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
@@ -149,8 +150,10 @@ public class App {
                     }else if(a.getNode().getType()!=typeMethod){
                         //search for parent(übergeordnete) method or class (if no parent method exists)
                         ITree parentForSearch = searchParentMethodOrClass(a.getNode());
-                        System.out.println("Test search Parent: "+ parentForSearch.toShortString());
-                        checkForTestsList.add(traverseTree(rootSpoonRight,parentForSearch));
+                        if(parentForSearch != null){
+                            System.out.println("Test search Parent: "+ parentForSearch.toShortString());
+                            checkForTestsList.add(traverseTree(rootSpoonRight,parentForSearch));
+                        }
                     }
                 }
 
@@ -200,13 +203,14 @@ public class App {
                         for(Mapping m:matcher.getMappings()){
                             if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
                                 mappingNode = m.getSecond();
+                                System.out.println(mappingNode.toShortString());
                             }
                         }
                         ITree parent = searchParentMethodOrClass(mappingNode);
-                        System.out.println("Test search Parent: "+ parent.toShortString());
-                        checkForTestsList.add(traverseTree(rootSpoonRight,parent));
-
-
+                        if(parent!= null){
+                            System.out.println("Test search Parent: "+ parent.toShortString());
+                            checkForTestsList.add(traverseTree(rootSpoonRight,parent));
+                        }
                     }
                 }
 
@@ -217,7 +221,17 @@ public class App {
                     if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
                         //If Node is not a Method
                     }else if(a.getNode().getType()!=typeMethod){
-
+                        ITree parent = searchParentMethodOrClass(a.getNode());
+                        if(parent != null && parent.getType() != typeClass){
+                            System.out.println(parent.toShortString());
+                            ITree mappingNode = null;
+                            for(Mapping m: matcher.getMappings()){
+                                if(m.getFirst().toShortString().equals(parent.toShortString()) && m.getFirst().getParent().getType() == typeClass){
+                                    mappingNode = m.getSecond();
+                                }
+                            }
+                            checkForTestsList.add(traverseTree(rootSpoonRight,mappingNode));
+                        }
                     }
                 }
 
@@ -264,8 +278,12 @@ public class App {
         }
     }
     public static ITree searchParentMethodOrClass(ITree node){
-     if(node.getParent().getType()==-1993687807 || node.getParent().getType()==65190232){
+     if(node.getParent().getType()==-1993687807 && node.getParent().getParent().getType()==65190232){
          return node.getParent();
+     }else if(node.getParent().getType() ==65190232){
+         return node.getParent();
+     }else if(node.getParent().getType()== -1){
+         return null;
      }
      return searchParentMethodOrClass(node.getParent());
     }

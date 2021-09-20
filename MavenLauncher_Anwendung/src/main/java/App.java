@@ -5,7 +5,6 @@ import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.TreeContext;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
@@ -18,11 +17,11 @@ import java.util.Set;
 
 public class App {
     public static void main(String[] args) {
-        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc";
-        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc_NEU";
+//        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc";
+//        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc_NEU";
 
-//        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
-//        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
+        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
+        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
 
         MavenLauncher launcherOld = new MavenLauncher(projectOldPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
         MavenLauncher launcherNew = new MavenLauncher(projectNewPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
@@ -124,7 +123,9 @@ public class App {
                                 nodeForSearchInTree = m.getSecond();
                             }
                         }
+                        assert nodeForSearchInTree != null;
                         ITree parentForSearch = searchParentMethodOrClass(nodeForSearchInTree);
+                        assert parentForSearch != null;
                         System.out.println("Test search Parent: "+ parentForSearch.toShortString());
                         checkForTestsList.add(traverseTree(rootSpoonRight,parentForSearch));
                         //If Node is not a Method
@@ -134,8 +135,10 @@ public class App {
                                 nodeForSearchInTree = m.getSecond();
                             }
                         }
+                        assert nodeForSearchInTree != null;
                         if(nodeForSearchInTree.getType()!=typeClass && nodeForSearchInTree.getType()!=typeInterface){
                             ITree parent = searchParentMethodOrClass(nodeForSearchInTree);
+                            assert parent != null;
                             System.out.println("Test search Parent: "+ parent.toShortString());
                             checkForTestsList.add(traverseTree(rootSpoonRight,parent));
                         }
@@ -161,6 +164,7 @@ public class App {
                                 mappingNode = m.getSecond();
                             }
                         }
+                        assert mappingNode != null;
                         ITree parent = searchParentMethodOrClass(mappingNode);
                         if(parent!= null){
                             System.out.println("Test search Parent: "+ parent.toShortString());
@@ -174,6 +178,7 @@ public class App {
                 if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
                     //If Node is Method --> ignored --> done by the compiler
                     if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
+                        System.out.println("Method "+a.getNode()+" has been deleted.");
                         //If Node is not a Method
                     }else if(a.getNode().getType()!=typeMethod){
                         ITree parent = searchParentMethodOrClass(a.getNode());
@@ -214,20 +219,19 @@ public class App {
         }
     }
     public static void traverseChildren(List<ITree> childrenList,int checkType, String checkLabel){
-        int listSize = childrenList.size();
 
-        for(int i = 0; i<listSize;i++){
-            if(childrenList.get(i).getType()==checkType && childrenList.get(i).getLabel().equals(checkLabel) && childrenList.get(i).getParent().getType()==65190232){
+        for (ITree iTree : childrenList) {
+            if (iTree.getType() == checkType && iTree.getLabel().equals(checkLabel) && iTree.getParent().getType() == 65190232) {
                 System.out.println("________Found:");
-                System.out.println("Type: "+childrenList.get(i).getType());
-                System.out.println("Label: "+childrenList.get(i).getLabel());
-                System.out.println(childrenList.get(i).toTreeString());
-                System.out.println(childrenList.get(i).toShortString());
-                System.out.println("Parent: "+childrenList.get(i).getParent().toShortString());
-                System.out.println("ID of Children: "+childrenList.get(i).getId());
-            }else {
-                if(childrenList.get(i).getChildren().size() != 0){
-                      traverseChildren(childrenList.get(i).getChildren(),checkType,checkLabel);
+                System.out.println("Type: " + iTree.getType());
+                System.out.println("Label: " + iTree.getLabel());
+                System.out.println(iTree.toTreeString());
+                System.out.println(iTree.toShortString());
+                System.out.println("Parent: " + iTree.getParent().toShortString());
+                System.out.println("ID of Children: " + iTree.getId());
+            } else {
+                if (iTree.getChildren().size() != 0) {
+                    traverseChildren(iTree.getChildren(), checkType, checkLabel);
                 }
             }
         }

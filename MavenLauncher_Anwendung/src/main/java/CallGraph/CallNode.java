@@ -46,4 +46,8 @@ public class CallNode {
         }
         return true;
     }
+
+    public ITree getiTreeNode() {
+        return iTreeNode;
+    }
 }

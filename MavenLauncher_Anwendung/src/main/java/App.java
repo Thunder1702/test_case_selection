@@ -18,11 +18,11 @@ import java.util.Set;
 
 public class App {
     public static void main(String[] args) {
-//        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc";
-//        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc_NEU";
+        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc";
+        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc_NEU";
 
-        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
-        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
+//        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
+//        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
 
         MavenLauncher launcherOld = new MavenLauncher(projectOldPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
         MavenLauncher launcherNew = new MavenLauncher(projectNewPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
@@ -76,49 +76,6 @@ public class App {
                 updates.add(action);
             }
         });
-/*
-        //get Mappings from MappingStore
-        //Check Mapping NodeLabel with Action->Node->NodeLabel
-        for (Action a:actions) {
-            //Extract the NodeLabel from actions
-            int type = a.getNode().getType();
-            String label = a.getNode().getLabel();
-            String nodeLabel = a.getNode().toShortString();
-            System.out.println("NodeLabel: "+nodeLabel);
-
-            //Get Mappings from MappingStore
-            for (Mapping m:matcher.getMappings()) {
-                //Check if mapping includes NodeLabel from actions
-//                System.out.println(m);
-//                System.out.println("Check for NodeLabel: "+m.getFirst().toShortString().equals(nodeLabel));
-                String nodeFound = "";
-                if(m.getFirst().toShortString().equals(nodeLabel)){
-                    System.out.println("Mapping: ("+m.getFirst().toShortString().concat(","+m.getSecond().toShortString()+")"));
-                    //if true, output the mapped NodeLabel from the other Node
-                    nodeFound = m.getSecond().toShortString();
-                    System.out.println("MappingNodeFound: "+nodeFound);
-
-                    //initialize for usage
-                    ITree traverseTree = rootSpoonRight;
-                    String nodeFoundType = nodeFound.split("@@")[0];
-                    int nodeFoundTypeInt = Integer.parseInt(nodeFoundType);
-                    String nodeFoundLabel = nodeFound.split("@@")[1];
-
-                    //Search in rootSpoonRight for the Node with the NodeLabel from the Mappings
-                    //First search in root
-                    System.out.println("________Search for Node__________");
-
-                    // Call Graph !!!
-
-
-                    List<ITree> list = checkRoot(traverseTree,nodeFoundTypeInt,nodeFoundLabel);
-                    traverseChildren(list,nodeFoundTypeInt,nodeFoundLabel);
-                }
-            }
-        }
-*/
-        // ____________________________________________________________________________________
-        //Neue Variante für Code von oben
 
         int typeClass = 65190232;
         int typeInterface = -1788375783;
@@ -132,7 +89,6 @@ public class App {
         int typeReturn = -1850529456;
         int typeReturnDatatype = 69274153;
 
-        //TreeSet??????????
         Set<ITree> checkForTestsList = new HashSet<>();
         int num = 0;
 
@@ -203,7 +159,6 @@ public class App {
                         for(Mapping m:matcher.getMappings()){
                             if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
                                 mappingNode = m.getSecond();
-                                System.out.println(mappingNode.toShortString());
                             }
                         }
                         ITree parent = searchParentMethodOrClass(mappingNode);
@@ -217,7 +172,7 @@ public class App {
             }else if(a.toString().startsWith("DEL")){
                 //Exclude packages --> only Method changes
                 if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
-                    //If Node is Method
+                    //If Node is Method --> ignored --> done by the compiler
                     if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
                         //If Node is not a Method
                     }else if(a.getNode().getType()!=typeMethod){
@@ -300,7 +255,7 @@ public class App {
         for (ITree t:tree.breadthFirst()) {
             if(t.getType()==searchNode.getType() && t.getLabel().equals(searchNode.getLabel()) && t.getParent().getType()==65190232){
                 System.out.println("______________________Found__________________________");
-                System.out.println("___________________"+t.toShortString()+"______________________");
+                System.out.println("Node Found in AST Tree: "+t.toShortString());
                 System.out.println("_______________________________________________________________");
                 return t;
             }

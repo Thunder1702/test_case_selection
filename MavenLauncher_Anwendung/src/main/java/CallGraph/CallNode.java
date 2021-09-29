@@ -39,6 +39,9 @@ public class CallNode {
     public void addInvocation(Invocation call) {
         this.invocationList.add(call);
     }
+    public List<Invocation> getInvocations() {
+        return invocationList;
+    }
 
     public boolean isLeafNode() {
         for (Invocation invocation : this.invocationList) {

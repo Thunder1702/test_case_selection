@@ -37,6 +37,8 @@ public class App {
         launcherNew.buildModel();
         CtModel modelNew = launcherNew.getModel();
 
+        /* nur auf Test für CallGraph */
+
         modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
         modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
 
@@ -62,7 +64,7 @@ public class App {
             System.out.println("Package: "+p.getQualifiedName());
         }
         Set list2 = new HashSet();
-        for(CtType c: modelNew.getAllTypes()){
+        for(CtType c: modelOld.getAllTypes()){
             if(c.isClass()){
                 System.out.println("Class: "+c.getQualifiedName());
                 list2.add(c.getMethods());

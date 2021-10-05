@@ -1,4 +1,4 @@
-package CallGraph;
+package CallGraph_ALT;
 
 import com.github.gumtreediff.tree.ITree;
 

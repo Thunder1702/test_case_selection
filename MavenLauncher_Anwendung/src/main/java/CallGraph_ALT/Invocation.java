@@ -1,4 +1,4 @@
-package CallGraph;
+package CallGraph_ALT;
 
 //Copy from Fabian Oraze (automized-dp-conflict-resolver-main)
 

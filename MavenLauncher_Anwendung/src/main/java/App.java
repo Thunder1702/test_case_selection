@@ -9,6 +9,10 @@ import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
 import spoon.reflect.CtModelImpl;
+import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtPackage;
+import spoon.reflect.declaration.CtType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,6 +39,37 @@ public class App {
 
         modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
         modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
+
+        System.out.println("___________________LOG____________________");
+        System.out.println("ModelNew");
+        for(CtPackage p: modelNew.getAllPackages()){
+            System.out.println("Package: "+p.getQualifiedName());
+        }
+        Set list1 = new HashSet();
+        for(CtType c: modelNew.getAllTypes()){
+            if(c.isClass()){
+                System.out.println("Class: "+c.getQualifiedName());
+                for (Object m:c.getMethods()) {
+                    list1.add(m.toString());
+                }
+                //list1.add(c.getMethods());
+            }
+        }
+        list1.forEach(System.out::println);
+
+        System.out.println("ModelOld");
+        for(CtPackage p: modelOld.getAllPackages()){
+            System.out.println("Package: "+p.getQualifiedName());
+        }
+        Set list2 = new HashSet();
+        for(CtType c: modelNew.getAllTypes()){
+            if(c.isClass()){
+                System.out.println("Class: "+c.getQualifiedName());
+                list2.add(c.getMethods());
+            }
+        }
+        list2.forEach(System.out::println);
+        System.out.println("___________________LOG END____________________");
 
         //modelOld.getElements(ctElement -> true).forEach(System.out::println);
         //modelNew.getElements(ctElement -> true).forEach(System.out::println);
@@ -259,7 +294,7 @@ public class App {
         for (ITree t:tree.breadthFirst()) {
             if(t.getType()==searchNode.getType() && t.getLabel().equals(searchNode.getLabel()) && t.getParent().getType()==65190232){
                 System.out.println("______________________Found__________________________");
-                System.out.println("Node Found in AST Tree: "+t.toShortString());
+                System.out.println("Node Found in ITree from ModelNew: "+t.toShortString());
                 System.out.println("_______________________________________________________________");
                 return t;
             }

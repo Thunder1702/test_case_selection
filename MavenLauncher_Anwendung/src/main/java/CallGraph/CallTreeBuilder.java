@@ -22,6 +22,18 @@ public class CallTreeBuilder {
     public void setNodes(List<CallNode> nodes) {
         this.nodes = nodes;
     }
+    public void addNode(CallNode nodeToAdd){
+        this.nodes.add(nodeToAdd);
+    }
+    public void addInvocation(Invocation invocationToAdd){
+        this.invocations.add(invocationToAdd);
+    }
+    public void removeNode(CallNode nodeToRemove){
+        this.nodes.remove(nodeToRemove);
+    }
+    public void removeInvocation(Invocation invocationToRemove){
+        this.invocations.remove(invocationToRemove);
+    }
 
     public Set<Invocation> getInvocations() {
         return invocations;
@@ -29,5 +41,12 @@ public class CallTreeBuilder {
 
     public void setInvocations(Set<Invocation> invocations) {
         this.invocations = invocations;
+    }
+    public void setCallTree(List<CallNode> nodes, Set<Invocation> invocations){
+        this.callTree = new CallTree(nodes,invocations);
+    }
+
+    public CallTree getCallTree() {
+        return this.callTree;
     }
 }

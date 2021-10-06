@@ -14,7 +14,6 @@ import spoon.reflect.CtModelImpl;
 import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtType;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

@@ -1,3 +1,4 @@
+import ActionAnalyze.ITreeTypes;
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.matchers.CompositeMatchers;
@@ -82,6 +83,8 @@ public class App {
         ITree rootSpoonLeft = scanner.getTree(modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
         ITree rootSpoonRight = scanner.getTree(modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
 
+        //
+
         final MappingStore mappingsComp = new MappingStore();
 
         final Matcher matcher = new CompositeMatchers.ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
@@ -125,6 +128,9 @@ public class App {
         int typeReturn = -1850529456;
         int typeReturnDatatype = 69274153;
 
+        ITreeTypes types = new ITreeTypes();
+
+
         Set<ITree> checkForTestsList = new HashSet<>();
         int num = 0;
 
@@ -136,7 +142,7 @@ public class App {
                 //Exclude packages --> only Method changes
                 if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
                     //If Node is Method
-                    if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
+                    if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==types.getTypeClass()){
                         checkForTestsList.add(traverseTree(rootSpoonRight,a.getNode()));
                         //If Node is not a Method
                     }else if(a.getNode().getType()!=typeMethod){

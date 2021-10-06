@@ -1,48 +1,59 @@
 package ActionAnalyze;
 
 public class ITreeTypes {
+    static final int typeClass = 65190232;
+    static final int typeInterface = -1788375783;
+    static final int typePackage = 857590822;
+    static final int typeMethod = -1993687807;
+    static final int typeComment = -1679915457;
+    static final int typeParameter = -33653874;
+    static final int typeDatatype = 188328733;
+    static final int typeVariable = 67875034;
+    static final int typeValue = 1847113871;
+    static final int typeReturn = -1850529456;
+    static final int typeReturnDatatype = 69274153;
 
     public int getTypeClass() {
-        return 65190232;
+        return typeClass;
     }
 
     public int getTypeInterface() {
-        return -1788375783;
+        return typeInterface;
     }
 
     public int getTypePackage() {
-        return 857590822;
+        return typePackage;
     }
 
     public int getTypeMethod() {
-        return -1993687807;
+        return typeMethod;
     }
 
     public int getTypeComment() {
-        return -1679915457;
+        return typeComment;
     }
 
     public int getTypeParameter() {
-        return -33653874;
+        return typeParameter;
     }
 
     public int getTypeDatatype() {
-        return 188328733;
+        return typeDatatype;
     }
 
     public int getTypeVariable() {
-        return 67875034;
+        return typeVariable;
     }
 
     public int getTypeValue() {
-        return 1847113871;
+        return typeValue;
     }
 
     public int getTypeReturn() {
-        return -1850529456;
+        return typeReturn;
     }
 
     public int getTypeReturnDatatype() {
-        return 69274153;
+        return typeReturnDatatype;
     }
 }

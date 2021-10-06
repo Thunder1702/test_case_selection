@@ -10,8 +10,7 @@ import gumtree.spoon.builder.SpoonGumTreeBuilder;
 import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
 import spoon.reflect.CtModelImpl;
-import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtMethod;
+
 import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtType;
 
@@ -98,35 +97,6 @@ public class App {
 
 //        outputActionInformation(actions);
 
-//Extract types of actions
-        ArrayList<Action> inserts = new ArrayList<>();
-        ArrayList<Action> deletes = new ArrayList<>();
-        ArrayList<Action> updates = new ArrayList<>();
-        ArrayList<Action> moves = new ArrayList<>();
-
-        actions.forEach(action -> {
-            if(action.toString().startsWith("INS")){
-                inserts.add(action);
-            }else if(action.toString().startsWith("MOV")){
-                moves.add(action);
-            }else if(action.toString().startsWith("DEL")){
-                deletes.add(action);
-            }else if(action.toString().startsWith("UPD")){
-                updates.add(action);
-            }
-        });
-
-        int typeClass = 65190232;
-        int typeInterface = -1788375783;
-        int typePackage = 857590822;
-        int typeMethod = -1993687807;
-        int typeComment = -1679915457;
-        int typeParameter = -33653874;
-        int typeDatatype = 188328733;
-        int typeVariable = 67875034;
-        int typeValue = 1847113871;
-        int typeReturn = -1850529456;
-        int typeReturnDatatype = 69274153;
 
         ITreeTypes types = new ITreeTypes();
 
@@ -140,12 +110,12 @@ public class App {
 
             if(a.toString().startsWith("INS")){
                 //Exclude packages --> only Method changes
-                if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
+                if(!(a.getNode().getType() ==types.getTypePackage() || a.getNode().getParent().getType() ==types.getTypePackage())){
                     //If Node is Method
-                    if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==types.getTypeClass()){
+                    if(a.getNode().getType()==types.getTypeMethod() && a.getNode().getParent().getType()==types.getTypeClass()){
                         checkForTestsList.add(traverseTree(rootSpoonRight,a.getNode()));
                         //If Node is not a Method
-                    }else if(a.getNode().getType()!=typeMethod){
+                    }else if(a.getNode().getType()!=types.getTypeMethod()){
                         //search for parent(übergeordnete) method or class (if no parent method exists)
                         ITree parentForSearch = searchParentMethodOrClass(a.getNode());
                         if(parentForSearch != null){
@@ -157,10 +127,10 @@ public class App {
 
             }else if(a.toString().startsWith("MOV")){
                 //Exclude packages --> only Method changes
-                if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
+                if(!(a.getNode().getType() == types.getTypePackage() || a.getNode().getParent().getType() == types.getTypePackage())){
                     ITree nodeForSearchInTree = null;
                     //If Node is Method
-                    if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
+                    if(a.getNode().getType()==types.getTypeMethod() && a.getNode().getParent().getType()==types.getTypeClass()){
                         for (Mapping m:matcher.getMappings()) {
                             if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
                                 nodeForSearchInTree = m.getSecond();
@@ -172,14 +142,14 @@ public class App {
                         System.out.println("Test search Parent: "+ parentForSearch.toShortString());
                         checkForTestsList.add(traverseTree(rootSpoonRight,parentForSearch));
                         //If Node is not a Method
-                    }else if(a.getNode().getType()!=typeMethod){
+                    }else if(a.getNode().getType()!=types.getTypeMethod()){
                         for(Mapping m:matcher.getMappings()){
                             if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
                                 nodeForSearchInTree = m.getSecond();
                             }
                         }
                         assert nodeForSearchInTree != null;
-                        if(nodeForSearchInTree.getType()!=typeClass && nodeForSearchInTree.getType()!=typeInterface){
+                        if(nodeForSearchInTree.getType()!=types.getTypeClass() && nodeForSearchInTree.getType()!=types.getTypeInterface()){
                             ITree parent = searchParentMethodOrClass(nodeForSearchInTree);
                             assert parent != null;
                             System.out.println("Test search Parent: "+ parent.toShortString());
@@ -190,10 +160,10 @@ public class App {
 
             }else if(a.toString().startsWith("UPD")){
                 //Exclude packages --> only Method changes
-                if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
+                if(!(a.getNode().getType() == types.getTypePackage() || a.getNode().getParent().getType() == types.getTypePackage())){
                     ITree mappingNode = null;
                     //If Node is Method
-                    if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
+                    if(a.getNode().getType()==types.getTypeMethod() && a.getNode().getParent().getType()==types.getTypeClass()){
                         for(Mapping m:matcher.getMappings()){
                             if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
                                 mappingNode = m.getSecond();
@@ -201,7 +171,7 @@ public class App {
                         }
                         checkForTestsList.add(traverseTree(rootSpoonRight,mappingNode));
                         //If Node is not a Method
-                    }else if(a.getNode().getType()!=typeMethod){
+                    }else if(a.getNode().getType()!=types.getTypeMethod()){
                         for(Mapping m:matcher.getMappings()){
                             if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
                                 mappingNode = m.getSecond();
@@ -218,18 +188,18 @@ public class App {
 
             }else if(a.toString().startsWith("DEL")){
                 //Exclude packages --> only Method changes
-                if(!(a.getNode().getType() == typePackage || a.getNode().getParent().getType() == typePackage)){
+                if(!(a.getNode().getType() == types.getTypePackage() || a.getNode().getParent().getType() == types.getTypePackage())){
                     //If Node is Method --> ignored --> done by the compiler
-                    if(a.getNode().getType()==typeMethod && a.getNode().getParent().getType()==typeClass){
+                    if(a.getNode().getType()==types.getTypeMethod()&& a.getNode().getParent().getType()==types.getTypeClass()){
                         System.out.println("Method "+a.getNode()+" has been deleted.");
                         //If Node is not a Method
-                    }else if(a.getNode().getType()!=typeMethod){
+                    }else if(a.getNode().getType()!=types.getTypeMethod()){
                         ITree parent = searchParentMethodOrClass(a.getNode());
-                        if(parent != null && parent.getType() != typeClass){
+                        if(parent != null && parent.getType() !=types.getTypeClass()){
                             System.out.println(parent.toShortString());
                             ITree mappingNode = null;
                             for(Mapping m: matcher.getMappings()){
-                                if(m.getFirst().toShortString().equals(parent.toShortString()) && m.getFirst().getParent().getType() == typeClass){
+                                if(m.getFirst().toShortString().equals(parent.toShortString()) && m.getFirst().getParent().getType() ==types.getTypeClass()){
                                     mappingNode = m.getSecond();
                                 }
                             }

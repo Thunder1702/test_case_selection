@@ -1,4 +1,4 @@
-package CallGraph_ALT;
+package CallGraph;
 
 import com.github.gumtreediff.tree.ITree;
 
@@ -6,9 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 //Copy from Fabian Oraze (automized-dp-conflict-resolver-main)
+//partly changed
 
 public class CallNode {
-
+    /*
+    * Node name = className
+    * invocationList = Method that invocation
+    * previous = Node from Invocation starts to current Node
+    * iTreeNode = ITree Node for this class Node
+    */
     private String className;
     private List<Invocation> invocationList;
     private CallNode previous;
@@ -20,7 +26,6 @@ public class CallNode {
         this.previous = previous;
         this.iTreeNode = iTreeNode;
     }
-
     public String getClassName() {
         return className;
     }
@@ -36,21 +41,17 @@ public class CallNode {
     public void setPrevious(CallNode previous) {
         this.previous = previous;
     }
-    public void addInvocation(Invocation call) {
-        this.invocationList.add(call);
-    }
-    public List<Invocation> getInvocations() {
-        return invocationList;
-    }
 
+    public ITree getiTreeNode() {
+        return iTreeNode;
+    }
+    public void setiTreeNode(ITree itreeNode){this.iTreeNode=itreeNode;}
+
+    public List<Invocation> getInvocationList(){return this.invocationList;}
     public boolean isLeafNode() {
         for (Invocation invocation : this.invocationList) {
             if (invocation.getNextNode() != null) return false;
         }
         return true;
-    }
-
-    public ITree getiTreeNode() {
-        return iTreeNode;
     }
 }

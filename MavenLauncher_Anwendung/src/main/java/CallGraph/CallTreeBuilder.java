@@ -5,6 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/*
+ * Maybe not needed, because of addNode and addInvocation Method in CallTree
+ */
+
 public class CallTreeBuilder {
     private CallTree callTree;
     private List<CallNode> nodes;

@@ -2,6 +2,11 @@ package CallGraph;
 
 import com.github.gumtreediff.tree.ITree;
 import spoon.reflect.CtModel;
+import spoon.reflect.declaration.CtType;
+import spoon.reflect.visitor.filter.TypeFilter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CallModel {
     /*
@@ -10,11 +15,13 @@ public class CallModel {
     private CtModel ctModelCompleteAST;
     private CtModel ctModelOnlyTestAST;
     private ITree iTreeOfModel;
+    private List<CallNode> rootNodes;
 
     private CallModel(CtModel ctModelComplete,CtModel ctModeTest, ITree iTree){
         this.ctModelCompleteAST = ctModelComplete;
         this.ctModelOnlyTestAST = ctModeTest;
         this.iTreeOfModel = iTree;
+        this.rootNodes = new ArrayList<>();
     }
     /*
      * Every single test class from package "test" is a root in a CallTree.
@@ -34,5 +41,15 @@ public class CallModel {
      * Case: One Method calls another method
      *
      */
+    public void analyze(CtModel testModel, ITree iTree){
+        for(CtType c: testModel.getAllTypes()){
+            //Name überprüfen, ob passt, wenn nicht --> auslagern eigene Methode Name extrahieren.
+            //richtiges ITree Element finden --> eigene Methode (auslagern)
+            System.out.println(c.getQualifiedName());
+            CallNode root = new CallNode(c.getQualifiedName(),null,iTree);
+            this.rootNodes.add(root);
+        }
+    }
+
 
 }

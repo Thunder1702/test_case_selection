@@ -3,6 +3,7 @@ package CallGraph;
 import ActionAnalyze.ITreeTypes;
 import com.github.gumtreediff.tree.ITree;
 import spoon.reflect.CtModel;
+import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtType;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class CallModel {
     private List<CallNode> rootNodes;
     private ITreeTypes types;
 
-    private CallModel(CtModel ctModelComplete,CtModel ctModeTest, ITree iTree){
+    public CallModel(CtModel ctModelComplete,CtModel ctModeTest, ITree iTree){
         this.ctModelCompleteAST = ctModelComplete;
         this.ctModelOnlyTestAST = ctModeTest;
         this.iTreeOfModel = iTree;
@@ -70,6 +71,14 @@ public class CallModel {
 
         }
         return null;
+    }
+    public void outputPackages(CtModel model, String modelName){
+        System.out.println("___________________LOG Packages____________________");
+        System.out.println(modelName);
+        for(CtPackage p: model.getAllPackages()){
+            System.out.println("Package: "+p.getQualifiedName());
+        }
+        System.out.println("___________________LOG END____________________");
     }
 
 

@@ -1,4 +1,5 @@
 import ActionAnalyze.ITreeTypes;
+import CallGraph.CallModel;
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.matchers.CompositeMatchers;
@@ -36,20 +37,15 @@ public class App {
         //Create AST of Project New
         launcherNew.buildModel();
         CtModel modelNew = launcherNew.getModel();
-        //Create AST of project New (ONLY Test Source)
+        //Create AST of project New (ONLY Test Source), needed for CallGraph
         launcherNewTest.buildModel();
         CtModel modelNewTest = launcherNewTest.getModel();
-
-        /* nur auf Test für CallGraph */
 
         modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
         modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
 
-        System.out.println("___________________LOG____________________");
+
         System.out.println("ModelNewTest");
-        for(CtPackage p: modelNewTest.getAllPackages()){
-            System.out.println("Package: "+p.getQualifiedName());
-        }
         Set listTest = new HashSet();
         for(CtType c: modelNewTest.getAllTypes()){
             if(c.isClass()){
@@ -63,9 +59,6 @@ public class App {
         listTest.forEach(System.out::println);
 
         System.out.println("ModelNew");
-        for(CtPackage p: modelNew.getAllPackages()){
-            System.out.println("Package: "+p.getQualifiedName());
-        }
         Set list1 = new HashSet();
         for(CtType c: modelNew.getAllTypes()){
             if(c.isClass()){
@@ -79,9 +72,6 @@ public class App {
         list1.forEach(System.out::println);
 
         System.out.println("ModelOld");
-        for(CtPackage p: modelOld.getAllPackages()){
-            System.out.println("Package: "+p.getQualifiedName());
-        }
         Set list2 = new HashSet();
         for(CtType c: modelOld.getAllTypes()){
             if(c.isClass()){
@@ -90,18 +80,15 @@ public class App {
             }
         }
         list2.forEach(System.out::println);
-        System.out.println("___________________LOG END____________________");
-
-        //modelOld.getElements(ctElement -> true).forEach(System.out::println);
-        //modelNew.getElements(ctElement -> true).forEach(System.out::println);
 
         final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
-
-
         ITree rootSpoonLeft = scanner.getTree(modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
         ITree rootSpoonRight = scanner.getTree(modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
 
-        //
+        CallModel callModel = new CallModel(modelNew,modelNewTest,rootSpoonRight);
+        callModel.outputPackages(modelNewTest, "modelNewTest");
+        callModel.outputPackages(modelNew,"modelNew");
+        callModel.outputPackages(modelOld,"modelOld");
 
         final MappingStore mappingsComp = new MappingStore();
 

@@ -96,10 +96,7 @@ public class App {
 
 //        outputActionInformation(actions);
 
-
         ITreeTypes types = new ITreeTypes();
-
-
         Set<ITree> checkForTestsList = new HashSet<>();
         int num = 0;
 

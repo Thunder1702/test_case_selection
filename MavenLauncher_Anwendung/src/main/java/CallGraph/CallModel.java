@@ -7,11 +7,13 @@ public class CallModel {
     /*
      * Maybe ctModel and iTreeOfModel = final???
      */
-    private CtModel ctModel;
+    private CtModel ctModelCompleteAST;
+    private CtModel ctModelOnlyTestAST;
     private ITree iTreeOfModel;
 
-    private CallModel(CtModel ctModel, ITree iTree){
-        this.ctModel = ctModel;
+    private CallModel(CtModel ctModelComplete,CtModel ctModeTest, ITree iTree){
+        this.ctModelCompleteAST = ctModelComplete;
+        this.ctModelOnlyTestAST = ctModeTest;
         this.iTreeOfModel = iTree;
     }
     /*
@@ -32,7 +34,5 @@ public class CallModel {
      * Case: One Method calls another method
      *
      */
-    public static void main(String[] args) {
 
-    }
 }

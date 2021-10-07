@@ -28,6 +28,7 @@ public class App {
 
         MavenLauncher launcherOld = new MavenLauncher(projectOldPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
         MavenLauncher launcherNew = new MavenLauncher(projectNewPath, MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
+        MavenLauncher launcherNewTest =new MavenLauncher(projectNewPath,MavenLauncher.SOURCE_TYPE.TEST_SOURCE);
 
         //Create AST of Project Old
         launcherOld.buildModel();
@@ -35,6 +36,9 @@ public class App {
         //Create AST of Project New
         launcherNew.buildModel();
         CtModel modelNew = launcherNew.getModel();
+        //Create AST of project New (ONLY Test Source)
+        launcherNewTest.buildModel();
+        CtModel modelNewTest = launcherNewTest.getModel();
 
         /* nur auf Test für CallGraph */
 
@@ -42,6 +46,22 @@ public class App {
         modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
 
         System.out.println("___________________LOG____________________");
+        System.out.println("ModelNewTest");
+        for(CtPackage p: modelNewTest.getAllPackages()){
+            System.out.println("Package: "+p.getQualifiedName());
+        }
+        Set listTest = new HashSet();
+        for(CtType c: modelNewTest.getAllTypes()){
+            if(c.isClass()){
+                System.out.println("Class: "+c.getQualifiedName());
+                for (Object m:c.getMethods()) {
+                    listTest.add(m.toString());
+                }
+                //list1.add(c.getMethods());
+            }
+        }
+        listTest.forEach(System.out::println);
+
         System.out.println("ModelNew");
         for(CtPackage p: modelNew.getAllPackages()){
             System.out.println("Package: "+p.getQualifiedName());

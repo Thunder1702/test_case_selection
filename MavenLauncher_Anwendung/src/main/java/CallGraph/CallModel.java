@@ -4,7 +4,6 @@ import ActionAnalyze.ITreeTypes;
 import com.github.gumtreediff.tree.ITree;
 import spoon.reflect.CtModel;
 import spoon.reflect.declaration.CtType;
-import spoon.reflect.visitor.filter.TypeFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,22 +46,27 @@ public class CallModel {
     public void analyze(CtModel testModel, ITree iTree){
         for(CtType c: testModel.getAllTypes()){
             //getSimpleName() --> only class Name without Packages.
-            //richtiges ITree Element finden --> eigene Methode (auslagern)
-            CallNode root = new CallNode(c.getSimpleName(),null,findITreeElement(iTree,c.getSimpleName(),true));
+            //find right ITree Element--> new method (outsource)
+            CallNode root = new CallNode(c.getSimpleName(),null,findITreeElement(iTree,c.getSimpleName(),true,""));
             this.rootNodes.add(root);
         }
     }
-    private ITree findITreeElement(ITree iTree,String name, boolean isClass){
+    private ITree findITreeElement(ITree iTree,String searchName, boolean isClass, String parentNameClassIfMethod){
         //searching ITree element for a class
         if(isClass){
             for(ITree t: iTree.breadthFirst()){
-                if(t.getType() == types.getTypeClass() && t.getLabel().equals(name)){
+                if(t.getType() == types.getTypeClass() && t.getLabel().equals(searchName)){
                     return t;
                 }
             }
         }
         //searching ITree element for a method
         else {
+            for(ITree t:iTree.breadthFirst()){
+                if(t.getType() == types.getTypeMethod() && t.getLabel().equals(searchName) && t.getParent().getType()==types.getTypeClass() && t.getParent().getLabel().equals(parentNameClassIfMethod)){
+                    return t;
+                }
+            }
 
         }
         return null;

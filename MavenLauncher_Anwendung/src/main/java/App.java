@@ -53,7 +53,7 @@ public class App {
         Set listTest = new HashSet();
         for(CtType c: modelNewTest.getAllTypes()){
             if(c.isClass()){
-                System.out.println("Class: "+c.getQualifiedName());
+                System.out.println("Class: "+c.getSimpleName());
                 for (Object m:c.getMethods()) {
                     listTest.add(m.toString());
                 }
@@ -69,7 +69,7 @@ public class App {
         Set list1 = new HashSet();
         for(CtType c: modelNew.getAllTypes()){
             if(c.isClass()){
-                System.out.println("Class: "+c.getQualifiedName());
+                System.out.println("Class: "+c.getSimpleName());
                 for (Object m:c.getMethods()) {
                     list1.add(m.toString());
                 }

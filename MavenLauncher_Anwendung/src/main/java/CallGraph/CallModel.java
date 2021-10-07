@@ -1,5 +1,6 @@
 package CallGraph;
 
+import ActionAnalyze.ITreeTypes;
 import com.github.gumtreediff.tree.ITree;
 import spoon.reflect.CtModel;
 import spoon.reflect.declaration.CtType;
@@ -16,12 +17,14 @@ public class CallModel {
     private CtModel ctModelOnlyTestAST;
     private ITree iTreeOfModel;
     private List<CallNode> rootNodes;
+    private ITreeTypes types;
 
     private CallModel(CtModel ctModelComplete,CtModel ctModeTest, ITree iTree){
         this.ctModelCompleteAST = ctModelComplete;
         this.ctModelOnlyTestAST = ctModeTest;
         this.iTreeOfModel = iTree;
         this.rootNodes = new ArrayList<>();
+        this.types = new ITreeTypes();
     }
     /*
      * Every single test class from package "test" is a root in a CallTree.
@@ -43,12 +46,26 @@ public class CallModel {
      */
     public void analyze(CtModel testModel, ITree iTree){
         for(CtType c: testModel.getAllTypes()){
-            //Name überprüfen, ob passt, wenn nicht --> auslagern eigene Methode Name extrahieren.
+            //getSimpleName() --> only class Name without Packages.
             //richtiges ITree Element finden --> eigene Methode (auslagern)
-            System.out.println(c.getQualifiedName());
-            CallNode root = new CallNode(c.getQualifiedName(),null,iTree);
+            CallNode root = new CallNode(c.getSimpleName(),null,findITreeElement(iTree,c.getSimpleName(),true));
             this.rootNodes.add(root);
         }
+    }
+    private ITree findITreeElement(ITree iTree,String name, boolean isClass){
+        //searching ITree element for a class
+        if(isClass){
+            for(ITree t: iTree.breadthFirst()){
+                if(t.getType() == types.getTypeClass() && t.getLabel().equals(name)){
+                    return t;
+                }
+            }
+        }
+        //searching ITree element for a method
+        else {
+
+        }
+        return null;
     }
 
 

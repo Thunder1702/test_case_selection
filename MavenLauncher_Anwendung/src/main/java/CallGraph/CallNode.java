@@ -42,12 +42,17 @@ public class CallNode {
         this.previous = previous;
     }
 
-    public ITree getiTreeNode() {
+    public ITree getITreeNode() {
         return iTreeNode;
     }
-    public void setiTreeNode(ITree itreeNode){this.iTreeNode=itreeNode;}
+    public void setITreeNode(ITree itreeNode){this.iTreeNode=itreeNode;}
 
     public List<Invocation> getInvocationList(){return this.invocationList;}
+
+    public void addInvocation(Invocation invocation) {
+        this.invocationList.add(invocation);
+    }
+
     public boolean isLeafNode() {
         for (Invocation invocation : this.invocationList) {
             if (invocation.getNextNode() != null) return false;

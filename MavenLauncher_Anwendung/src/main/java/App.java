@@ -12,7 +12,6 @@ import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
 import spoon.reflect.CtModelImpl;
 
-import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtType;
 
 import java.util.HashSet;
@@ -44,51 +43,14 @@ public class App {
         modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
         modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
 
-
-        System.out.println("ModelNewTest");
-        Set listTest = new HashSet();
-        for(CtType c: modelNewTest.getAllTypes()){
-            if(c.isClass()){
-                System.out.println("Class: "+c.getSimpleName());
-                for (Object m:c.getMethods()) {
-                    listTest.add(m.toString());
-                }
-                //list1.add(c.getMethods());
-            }
-        }
-        listTest.forEach(System.out::println);
-
-        System.out.println("ModelNew");
-        Set list1 = new HashSet();
-        for(CtType c: modelNew.getAllTypes()){
-            if(c.isClass()){
-                System.out.println("Class: "+c.getSimpleName());
-                for (Object m:c.getMethods()) {
-                    list1.add(m.toString());
-                }
-                //list1.add(c.getMethods());
-            }
-        }
-        list1.forEach(System.out::println);
-
-        System.out.println("ModelOld");
-        Set list2 = new HashSet();
-        for(CtType c: modelOld.getAllTypes()){
-            if(c.isClass()){
-                System.out.println("Class: "+c.getQualifiedName());
-                list2.add(c.getMethods());
-            }
-        }
-        list2.forEach(System.out::println);
-
         final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
         ITree rootSpoonLeft = scanner.getTree(modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
         ITree rootSpoonRight = scanner.getTree(modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
 
         CallModel callModel = new CallModel(modelNew,modelNewTest,rootSpoonRight);
-        callModel.outputPackages(modelNewTest, "modelNewTest");
-        callModel.outputPackages(modelNew,"modelNew");
-        callModel.outputPackages(modelOld,"modelOld");
+        callModel.outputModelInformation(modelNewTest, "modelNewTest");
+        callModel.outputModelInformation(modelNew,"modelNew");
+        callModel.outputModelInformation(modelOld,"modelOld");
 
         final MappingStore mappingsComp = new MappingStore();
 

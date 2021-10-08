@@ -46,9 +46,9 @@ public class App {
         final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
         ITree rootSpoonLeft = scanner.getTree(modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
         ITree rootSpoonRight = scanner.getTree(modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
-        ITree completeNewModelITree = scanner.getTree(modelNewTest.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
+        ITree completeModelNewITree = scanner.getTree(modelNewTest.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
 
-        CallModel callModel = new CallModel(modelNew,modelNewTest,completeNewModelITree);
+        CallModel callModel = new CallModel(modelNew,modelNewTest,completeModelNewITree);
         callModel.outputModelInformation(modelNewTest, "modelNewTest");
         callModel.outputModelInformation(modelNew,"modelNew");
         callModel.outputModelInformation(modelOld,"modelOld");

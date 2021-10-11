@@ -12,8 +12,6 @@ import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
 import spoon.reflect.CtModelImpl;
 
-import spoon.reflect.declaration.CtType;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,15 +28,16 @@ public class App {
         MavenLauncher launcherNew = new MavenLauncher(projectNewPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
         MavenLauncher launcherNewTest =new MavenLauncher(projectNewPath,MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
 
-        //Create AST of Project Old
+        //Create AST of Project Old (ONLY Main)
         launcherOld.buildModel();
         CtModel modelOld = launcherOld.getModel();
-        //Create AST of Project New
+        //Create AST of Project New (ONLY Main)
         launcherNew.buildModel();
         CtModel modelNew = launcherNew.getModel();
-        //Create AST of project New (ONLY Test Source), needed for CallGraph
+        //Create AST of project New (ALL Sources Test+Main)
         launcherNewTest.buildModel();
         CtModel modelNewTest = launcherNewTest.getModel();
+
 
         modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
         modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
@@ -52,6 +51,9 @@ public class App {
         callModel.outputModelInformation(modelNewTest, "modelNewTest");
         callModel.outputModelInformation(modelNew,"modelNew");
         callModel.outputModelInformation(modelOld,"modelOld");
+
+        callModel.analyze();
+        System.out.println("________________________________________________________________________________");
 
         final MappingStore mappingsComp = new MappingStore();
 
@@ -185,35 +187,6 @@ public class App {
             System.out.println(t.toShortString());
             System.out.println(t.getParent().toShortString());
         }
-
-
-
-    }
-    public static List<ITree> checkRoot(ITree rootTree, int checkType, String checkLabel){
-        if(rootTree.getType()==checkType && rootTree.getLabel().equals(checkLabel)){
-            System.out.println("Found Node in Root.");
-            return null;
-        }else {
-            return rootTree.getChildren();
-        }
-    }
-    public static void traverseChildren(List<ITree> childrenList,int checkType, String checkLabel){
-
-        for (ITree iTree : childrenList) {
-            if (iTree.getType() == checkType && iTree.getLabel().equals(checkLabel) && iTree.getParent().getType() == 65190232) {
-                System.out.println("________Found:");
-                System.out.println("Type: " + iTree.getType());
-                System.out.println("Label: " + iTree.getLabel());
-                System.out.println(iTree.toTreeString());
-                System.out.println(iTree.toShortString());
-                System.out.println("Parent: " + iTree.getParent().toShortString());
-                System.out.println("ID of Children: " + iTree.getId());
-            } else {
-                if (iTree.getChildren().size() != 0) {
-                    traverseChildren(iTree.getChildren(), checkType, checkLabel);
-                }
-            }
-        }
     }
     public static ITree searchParentMethodOrClass(ITree node){
      if(node.getParent().getType()==-1993687807 && node.getParent().getParent().getType()==65190232){
@@ -224,15 +197,6 @@ public class App {
          return null;
      }
      return searchParentMethodOrClass(node.getParent());
-    }
-    public static void outputActionInformation (List<Action> actions){
-        for (Action a:actions) {
-            System.out.println("__________Action Information__________");
-            System.out.println("Hash: "+a.getNode().getHash());
-            System.out.println("Type: "+a.getNode().getType());
-            System.out.println("Label: "+a.getNode().getLabel());
-            System.out.println("__________Action Information End__________");
-        }
     }
     public static ITree traverseTree(ITree tree,ITree searchNode){
         for (ITree t:tree.breadthFirst()) {

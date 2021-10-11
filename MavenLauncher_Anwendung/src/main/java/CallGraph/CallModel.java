@@ -19,15 +19,15 @@ public class CallModel {
     /*
      * Maybe ctModel and iTreeOfModel = final???
      */
-    private CtModel ctModelCompleteAST;
-    private CtModel ctModelOnlyTestAST;
+    private CtModel ctModelOnlyMainAST;
+    private CtModel ctModelCompleteWithTestAST;
     private ITree iTreeOfModel;
     private List<CallNode> rootNodes;
     private ITreeTypes types;
 
-    public CallModel(CtModel ctModelComplete,CtModel ctModeTest, ITree iTree){
-        this.ctModelCompleteAST = ctModelComplete;
-        this.ctModelOnlyTestAST = ctModeTest;
+    public CallModel(CtModel ctModelMain,CtModel ctModelCompleteWithTest, ITree iTree){
+        this.ctModelOnlyMainAST = ctModelMain;
+        this.ctModelCompleteWithTestAST = ctModelCompleteWithTest;
         this.iTreeOfModel = iTree;
         this.rootNodes = new ArrayList<>();
         this.types = new ITreeTypes();
@@ -50,20 +50,35 @@ public class CallModel {
      * Case: One Method calls another method
      *
      */
-    public void analyze(CtModel testModel, ITree iTree){
-        for(CtType c: testModel.getAllTypes()){
-            //getSimpleName() --> only class Name without Packages.
-            //find right ITree Element--> new method (outsource)
-            CallNode root = new CallNode(c.getSimpleName(),null,findITreeElement(iTree,c.getSimpleName(),true,""));
-            this.rootNodes.add(root);
-            searchForInvocation(c,root);
+    public void analyze(){
+        for(CtType completeClazz: this.ctModelCompleteWithTestAST.getAllTypes()){
+            if(filterTests(completeClazz)){
+                //getSimpleName() --> only class Name without Packages.
+                System.out.println("Clazz: "+completeClazz.getSimpleName());
+                CallNode root = new CallNode(completeClazz.getSimpleName(),null,findITreeElement(this.iTreeOfModel,completeClazz.getSimpleName(),true,""));
+                this.rootNodes.add(root);
+                searchForInvocation(completeClazz,root);
+            }
         }
     }
+    private boolean filterTests(CtType c){
+        for(CtType clazz: this.ctModelOnlyMainAST.getAllTypes()){
+            if(c.getSimpleName().equals(clazz.getSimpleName())){
+                return  false;
+            }
+        }
+        return true;
+
+    }
+    /*
+     * Maybe splitt into findITreeElementClass and findITreeElementMethod ?
+     */
     private ITree findITreeElement(ITree iTree,String searchName, boolean isClass, String parentNameClassIfMethod){
         //searching ITree element for a class
         if(isClass){
             for(ITree t: iTree.breadthFirst()){
                 if(checkTypeClass(t.getType())&& checkLabel(searchName,t.getLabel())){
+                    System.out.println("ITree Element: "+t.toShortString());
                     return t;
                 }
             }
@@ -72,6 +87,7 @@ public class CallModel {
         else {
             for(ITree t:iTree.breadthFirst()){
                 if(checkTypeMethod(t.getType()) &&checkLabel(searchName,t.getLabel()) &&checkTypeClass(t.getParent().getType())&&checkLabel(parentNameClassIfMethod,t.getParent().getLabel())){
+                    System.out.println("ITree Element: "+t.toShortString());
                     return t;
                 }
             }
@@ -87,8 +103,6 @@ public class CallModel {
     private boolean checkTypeClass(int type){
         return type==types.getTypeClass();
     }
-
-
     private void searchForInvocation(CtType clazz, CallNode currNode){
         Set<CtMethod> methods = clazz.getMethods();
         for(CtMethod m: methods){
@@ -98,6 +112,7 @@ public class CallModel {
                 //for every method call and constructor call --> add Invocation to invocationList of currNode
                 for(CtAbstractInvocation i: methodCalls){
                     //create Invocation Method --> return Invocation
+                    System.out.println(getMethodSignature(i));
 
                 }
                 //add Invocation

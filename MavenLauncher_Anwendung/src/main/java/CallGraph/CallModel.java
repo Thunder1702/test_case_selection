@@ -8,6 +8,7 @@ import spoon.reflect.code.CtConstructorCall;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtType;
+import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.filter.TypeFilter;
 
 import java.util.ArrayList;
@@ -112,17 +113,36 @@ public class CallModel {
                 //for every method call and constructor call --> add Invocation to invocationList of currNode
                 for(CtAbstractInvocation i: methodCalls){
                     //create Invocation Method --> return Invocation
-                    System.out.println(getMethodSignature(i));
-
+                    if(checkDeclaringType(i)){
+                        System.out.println("DeclaringType: "+i.getExecutable().getDeclaringType().getQualifiedName());
+                        System.out.println(getMethodSignature(i));
+                    }
                 }
                 //add Invocation
                 //create new CallNode (=nextNode from Invocation and previousNode = currNode)
             }
         }
     }
+    private boolean checkDeclaringType(CtAbstractInvocation i){
+        CtTypeReference fromType;
+        fromType = i.getExecutable().getDeclaringType();
+        if(isPartOfJDK(fromType.getQualifiedName())){
+            return false;
+        }
+        return true;
+
+    }
 //    private Invocation createInvocation(CtAbstractInvocation i){
 //
 //    }
+    private boolean isPartOfJDK(String qualifiedName){
+        return qualifiedName.startsWith("java.") || (qualifiedName.startsWith("javax.xml.parsers.")
+                || (qualifiedName.startsWith("com.sun.")) || (qualifiedName.startsWith("sun."))
+                || (qualifiedName.startsWith("oracle.")) || (qualifiedName.startsWith("org.xml"))
+                || (qualifiedName.startsWith("com.oracle.")) || (qualifiedName.startsWith("jdk."))
+                || (qualifiedName.startsWith("javax.xml.stream.")) || (qualifiedName.startsWith("javax.xml.transform."))
+                || (qualifiedName.startsWith("org.w3c.dom."))) || (qualifiedName.startsWith("org.junit"));
+    }
     private String getMethodSignature(CtAbstractInvocation element){
         String signature = element.getExecutable().getSimpleName();
         return signature;

@@ -10,11 +10,11 @@ public class MainTests {
     private CalculatorImpl calculator;
     @Before
     public void setup(){
-        calculator = new CalculatorImpl();
+        this.calculator = new CalculatorImpl();
     }
     @After
     public void finsih(){
-        calculator = null;
+        this.calculator = null;
     }
     @Test
     public void testAdd(){

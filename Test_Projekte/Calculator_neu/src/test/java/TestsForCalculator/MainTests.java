@@ -18,6 +18,6 @@ public class MainTests {
     }
     @Test
     public void testAdd(){
-        Assert.assertEquals(5,this.calculator.add(3,2));
+        Assert.assertEquals(5,calculator.add(3,2));
     }
 }

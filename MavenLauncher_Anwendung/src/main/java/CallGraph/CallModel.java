@@ -111,6 +111,7 @@ public class CallModel {
             List<CtConstructorCall> constructorCalls = m.filterChildren(new TypeFilter<>(CtConstructorCall.class)).list();
             if(!methodCalls.isEmpty() && !constructorCalls.isEmpty()){
                 //for every method call and constructor call --> add Invocation to invocationList of currNode
+                System.out.println(methodCalls.size());
                 for(CtAbstractInvocation i: methodCalls){
                     //create Invocation Method --> return Invocation
                     if(checkDeclaringType(i)){

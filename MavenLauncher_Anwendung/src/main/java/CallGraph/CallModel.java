@@ -72,7 +72,7 @@ public class CallModel {
 
     }
     /*
-     * Maybe splitt into findITreeElementClass and findITreeElementMethod ?
+     * Maybe split into findITreeElementClass and findITreeElementMethod ?
      */
     private ITree findITreeElement(ITree iTree,String searchName, boolean isClass, String parentNameClassIfMethod){
         //searching ITree element for a class
@@ -84,11 +84,12 @@ public class CallModel {
                 }
             }
         }
-        //searching ITree element for a method
+        //searching ITree element for a method (--> Constructor is missing!!)
         else {
             for(ITree t:iTree.breadthFirst()){
                 if(checkTypeMethod(t.getType()) &&checkLabel(searchName,t.getLabel()) &&checkTypeClass(t.getParent().getType())&&checkLabel(parentNameClassIfMethod,t.getParent().getLabel())){
                     System.out.println("ITree Element: "+t.toShortString());
+                    System.out.println("ITree Element Parent: "+t.getParent().toShortString());
                     return t;
                 }
             }
@@ -107,21 +108,24 @@ public class CallModel {
     private void searchForInvocation(CtType clazz, CallNode currNode){
         Set<CtMethod> methods = clazz.getMethods();
         for(CtMethod m: methods){
+            System.out.println("Method: "+m.getSimpleName());
             List<CtAbstractInvocation> methodCalls = m.getElements(new TypeFilter<>(CtAbstractInvocation.class));
             List<CtConstructorCall> constructorCalls = m.filterChildren(new TypeFilter<>(CtConstructorCall.class)).list();
-            if(!methodCalls.isEmpty() && !constructorCalls.isEmpty()){
+            // Is Empty if there are no Invocations in this method
+            if(!methodCalls.isEmpty()){
                 //for every method call and constructor call --> add Invocation to invocationList of currNode
-                System.out.println(methodCalls.size());
+//                System.out.println(methodCalls.size());
                 for(CtAbstractInvocation i: methodCalls){
                     //create Invocation Method --> return Invocation
                     if(checkDeclaringType(i)){
-                        System.out.println("DeclaringType: "+i.getExecutable().getDeclaringType().getQualifiedName());
+                        System.out.println("DeclaringType: "+getMethodDeclaringType(i));
                         System.out.println(getMethodSignature(i));
+                        createAndAddInvocation(i,currNode);
                     }
                 }
-//                for(CtConstructorCall c:constructorCalls){
-//                    System.out.println("Constructor: "+c.getExecutable().getSimpleName());
-//                }
+                for(CtConstructorCall c:constructorCalls){
+                    System.out.println("Constructor: "+c.getExecutable().getSimpleName());
+                }
                 //add Invocation
                 //create new CallNode (=nextNode from Invocation and previousNode = currNode)
             }
@@ -136,9 +140,13 @@ public class CallModel {
         return true;
 
     }
-//    private Invocation createInvocation(CtAbstractInvocation i){
-//
-//    }
+    private void createAndAddInvocation(CtAbstractInvocation i, CallNode currNode){
+        System.out.println(currNode.getClassName());
+
+        Invocation invocation = new Invocation(getMethodSignature(i),getMethodDeclaringType(i),currNode,findITreeElement(this.iTreeOfModel,getMethodSignature(i),false, getMethodDeclaringType(i)));
+        //set NextNode --> CallNode of declaring Type
+        currNode.addInvocation(invocation);
+    }
     private boolean isPartOfJDK(String qualifiedName){
         return qualifiedName.startsWith("java.") || (qualifiedName.startsWith("javax.xml.parsers.")
                 || (qualifiedName.startsWith("com.sun.")) || (qualifiedName.startsWith("sun."))
@@ -148,8 +156,10 @@ public class CallModel {
                 || (qualifiedName.startsWith("org.w3c.dom."))) || (qualifiedName.startsWith("org.junit"));
     }
     private String getMethodSignature(CtAbstractInvocation element){
-        String signature = element.getExecutable().getSimpleName();
-        return signature;
+        return element.getExecutable().getSimpleName();
+    }
+    private String getMethodDeclaringType(CtAbstractInvocation invocation){
+        return invocation.getExecutable().getDeclaringType().getSimpleName();
     }
 
     public void outputModelInformation(CtModel model, String modelName){

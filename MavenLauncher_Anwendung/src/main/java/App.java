@@ -48,9 +48,9 @@ public class App {
         ITree completeModelNewITree = scanner.getTree(modelNewTest.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
 
         CallModel callModel = new CallModel(modelNew,modelNewTest,completeModelNewITree);
-        callModel.outputModelInformation(modelNewTest, "modelNewTest");
-        callModel.outputModelInformation(modelNew,"modelNew");
-        callModel.outputModelInformation(modelOld,"modelOld");
+//        callModel.outputModelInformation(modelNewTest, "modelNewTest");
+//        callModel.outputModelInformation(modelNew,"modelNew");
+//        callModel.outputModelInformation(modelOld,"modelOld");
 
         callModel.analyze();
         System.out.println("________________________________________________________________________________");

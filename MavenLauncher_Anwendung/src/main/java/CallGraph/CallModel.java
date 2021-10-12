@@ -72,7 +72,7 @@ public class CallModel {
 
     }
     /*
-     * Maybe split into findITreeElementClass and findITreeElementMethod ?
+     * Maybe split into findITreeElementClass and findITreeElementMethod and findITreeElementConstructor?
      */
     private ITree findITreeElement(ITree iTree,String searchName, boolean isClass, String parentNameClassIfMethod){
         //searching ITree element for a class
@@ -84,10 +84,14 @@ public class CallModel {
                 }
             }
         }
-        //searching ITree element for a method (--> Constructor is missing!!)
+        //searching ITree element for a method or Constructor
         else {
             for(ITree t:iTree.breadthFirst()){
                 if(checkTypeMethod(t.getType()) &&checkLabel(searchName,t.getLabel()) &&checkTypeClass(t.getParent().getType())&&checkLabel(parentNameClassIfMethod,t.getParent().getLabel())){
+                    System.out.println("ITree Element: "+t.toShortString());
+                    System.out.println("ITree Element Parent: "+t.getParent().toShortString());
+                    return t;
+                }else if(t.getType()==types.getTypeConstructor()&&t.getLabel().equals(searchName)&&t.getParent().getType()==types.getTypeClass()&&t.getParent().getLabel().equals(parentNameClassIfMethod)){
                     System.out.println("ITree Element: "+t.toShortString());
                     System.out.println("ITree Element Parent: "+t.getParent().toShortString());
                     return t;

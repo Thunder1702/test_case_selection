@@ -12,6 +12,7 @@ public class ITreeTypes {
     static final int typeValue = 1847113871;
     static final int typeReturn = -1850529456;
     static final int typeReturnDatatype = 69274153;
+    static final int typeConstructor = 79462362;
 
     public int getTypeClass() {
         return typeClass;
@@ -19,6 +20,9 @@ public class ITreeTypes {
 
     public int getTypeInterface() {
         return typeInterface;
+    }
+    public int getTypeConstructor() {
+        return typeConstructor;
     }
 
     public int getTypePackage() {

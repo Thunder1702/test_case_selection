@@ -138,10 +138,7 @@ public class CallModel {
     private boolean checkDeclaringType(CtAbstractInvocation i){
         CtTypeReference fromType;
         fromType = i.getExecutable().getDeclaringType();
-        if(isPartOfJDK(fromType.getQualifiedName())){
-            return false;
-        }
-        return true;
+        return !isPartOfJDK(fromType.getQualifiedName());
 
     }
     private void createAndAddInvocation(CtAbstractInvocation i, CallNode currNode){
@@ -153,6 +150,7 @@ public class CallModel {
     }
     private CallNode createNextNode(String declaringType, CallNode currNode){
         return new CallNode(declaringType,currNode,findITreeElement(this.iTreeOfModel,declaringType,true,""));
+        //nextNode should be also traversed fr invocations !! --> implement recursion?
     }
 
     private boolean isPartOfJDK(String qualifiedName){
@@ -176,7 +174,7 @@ public class CallModel {
         for(CtPackage p: model.getAllPackages()){
             System.out.println("Package: "+p.getQualifiedName());
         }
-        Set<String> list = new HashSet<String>();
+        Set<String> list = new HashSet<>();
         for(CtType c: model.getAllTypes()){
             if(c.isClass()){
                 System.out.println("Class: "+c.getSimpleName());

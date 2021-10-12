@@ -109,7 +109,7 @@ public class CallModel {
         for(CtMethod m: methods){
             List<CtAbstractInvocation> methodCalls = m.getElements(new TypeFilter<>(CtAbstractInvocation.class));
             List<CtConstructorCall> constructorCalls = m.filterChildren(new TypeFilter<>(CtConstructorCall.class)).list();
-            if(!methodCalls.isEmpty()){
+            if(!methodCalls.isEmpty() && !constructorCalls.isEmpty()){
                 //for every method call and constructor call --> add Invocation to invocationList of currNode
                 for(CtAbstractInvocation i: methodCalls){
                     //create Invocation Method --> return Invocation
@@ -118,6 +118,9 @@ public class CallModel {
                         System.out.println(getMethodSignature(i));
                     }
                 }
+//                for(CtConstructorCall c:constructorCalls){
+//                    System.out.println("Constructor: "+c.getExecutable().getSimpleName());
+//                }
                 //add Invocation
                 //create new CallNode (=nextNode from Invocation and previousNode = currNode)
             }

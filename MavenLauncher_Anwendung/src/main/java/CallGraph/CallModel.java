@@ -148,9 +148,13 @@ public class CallModel {
         System.out.println(currNode.getClassName());
 
         Invocation invocation = new Invocation(getMethodSignature(i),getMethodDeclaringType(i),currNode,findITreeElement(this.iTreeOfModel,getMethodSignature(i),false, getMethodDeclaringType(i)));
-        //set NextNode --> CallNode of declaring Type
+        invocation.setNextNode(createNextNode(getMethodDeclaringType(i),currNode));
         currNode.addInvocation(invocation);
     }
+    private CallNode createNextNode(String declaringType, CallNode currNode){
+        return new CallNode(declaringType,currNode,findITreeElement(this.iTreeOfModel,declaringType,true,""));
+    }
+
     private boolean isPartOfJDK(String qualifiedName){
         return qualifiedName.startsWith("java.") || (qualifiedName.startsWith("javax.xml.parsers.")
                 || (qualifiedName.startsWith("com.sun.")) || (qualifiedName.startsWith("sun."))

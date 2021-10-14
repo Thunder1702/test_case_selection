@@ -34,19 +34,46 @@ public class ActionITreeAnalyze {
         this.deletes = new ArrayList<>();
     }
 
-    public void extractsTypesOfActions(List<Action> actions){
+    public void extractsTypesOfActions(){
         //maybe use this.actions not a parameter
-        actions.forEach(action -> {
-            if(action.toString().startsWith("INS")){
-                this.inserts.add(action);
-            }else if(action.toString().startsWith("MOV")){
-                this.moves.add(action);
-            }else if(action.toString().startsWith("DEL")){
-                this.deletes.add(action);
-            }else if(action.toString().startsWith("UPD")){
-                this.updates.add(action);
+        int num = 0;
+        for(Action a: this.actions){
+            System.out.println(num+") Node: "+a.getNode().toShortString());
+            System.out.println(num+") ParentNode: "+a.getNode().getParent().toShortString());
+            if(a.toString().startsWith("INS")){
+                this.inserts.add(a);
+            }else if(a.toString().startsWith("MOV")){
+                this.moves.add(a);
+            }else if(a.toString().startsWith("DEL")){
+                this.deletes.add(a);
+            }else if(a.toString().startsWith("UPD")){
+                this.updates.add(a);
             }
-        });
+            num++;
+        }
+        checkInserts();
+        checkMoves();
+        checkDeletes();
+        checkUpdates();
+    }
+    private void checkInserts(){
+        if(!this.inserts.isEmpty()){
+            for(Action a: this.inserts){
+                if(excludePackages(a)){
+
+                }
+            }
+        }
+
+    }
+    private void checkMoves(){
+
+    }
+    private void checkDeletes(){
+
+    }
+    private void checkUpdates(){
+
     }
     public void outputActionInformation (List<Action> actions){
         //maybe use this.actions not a parameter
@@ -68,6 +95,30 @@ public class ActionITreeAnalyze {
         }else {
             return rootTree.getChildren();
         }
+    }
+    public static ITree traverseTree(ITree tree,ITree searchNode){
+        for (ITree t:tree.breadthFirst()) {
+            if(t.getType()==searchNode.getType() && t.getLabel().equals(searchNode.getLabel()) && t.getParent().getType()==65190232){
+                System.out.println("______________________Found__________________________");
+                System.out.println("Node Found in ITree from ModelNew: "+t.toShortString());
+                System.out.println("_______________________________________________________________");
+                return t;
+            }
+        }
+        return null;
+    }
+    public static ITree searchParentMethodOrClass(ITree node){
+        if(node.getParent().getType()==-1993687807 && node.getParent().getParent().getType()==65190232){
+            return node.getParent();
+        }else if(node.getParent().getType() ==65190232){
+            return node.getParent();
+        }else if(node.getParent().getType()== -1){
+            return null;
+        }
+        return searchParentMethodOrClass(node.getParent());
+    }
+    private boolean excludePackages(Action a){
+        return a.getNode().getType()==this.types.getTypePackage() || a.getNode().getParent().getType()==this.types.getTypePackage();
     }
     /*
      * Maybe should be deleted

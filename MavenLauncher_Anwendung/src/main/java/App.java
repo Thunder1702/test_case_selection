@@ -39,9 +39,6 @@ public class App {
         CtModel modelNewTest = launcherNewTest.getModel();
 
 
-        modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
-        modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).forEach(System.out::println);
-
         final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
         ITree rootSpoonLeft = scanner.getTree(modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
         ITree rootSpoonRight = scanner.getTree(modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
@@ -56,7 +53,6 @@ public class App {
         System.out.println("________________________________________________________________________________");
 
         final MappingStore mappingsComp = new MappingStore();
-
         final Matcher matcher = new CompositeMatchers.ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
         matcher.match();
 
@@ -65,8 +61,6 @@ public class App {
 
         actions.forEach(System.out::println);
         System.out.println("______________________________________________________________");
-
-//        outputActionInformation(actions);
 
         ITreeTypes types = new ITreeTypes();
         Set<ITree> checkForTestsList = new HashSet<>();

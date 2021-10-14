@@ -1,3 +1,4 @@
+import ActionAnalyze.ActionITreeAnalyze;
 import ActionAnalyze.ITreeTypes;
 import CallGraph.CallModel;
 import com.github.gumtreediff.actions.ActionGenerator;
@@ -63,6 +64,8 @@ public class App {
         System.out.println("______________________________________________________________");
 
         ITreeTypes types = new ITreeTypes();
+        ActionITreeAnalyze actionITreeAnalyze  = new ActionITreeAnalyze(rootSpoonRight,rootSpoonLeft, actions, matcher);
+
         Set<ITree> checkForTestsList = new HashSet<>();
         int num = 0;
 

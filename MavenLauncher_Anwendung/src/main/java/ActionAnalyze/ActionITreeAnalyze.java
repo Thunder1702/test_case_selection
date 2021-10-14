@@ -59,12 +59,23 @@ public class ActionITreeAnalyze {
     private void checkInserts(){
         if(!this.inserts.isEmpty()){
             for(Action a: this.inserts){
-                if(excludePackages(a)){
-
+                //if true it is a method
+                //If Node is Method
+                if(checkAction(a)){
+                    this.checkForTestList.add(traverseTree(this.iTreeModelNew,a.getNode()));
+                }
+                //if false it is an inner element of a methode or something else
+                //If Node is not a Method
+                else {
+                    //search for parent(übergeordnete) method or class (if no parent method exists)
+                    ITree parentForSearch = searchParentMethodOrClass(a.getNode());
+                    if(parentForSearch != null){
+                        System.out.println("Test search Parent: "+ parentForSearch.toShortString());
+                        this.checkForTestList.add(traverseTree(this.iTreeModelNew,parentForSearch));
+                    }
                 }
             }
         }
-
     }
     private void checkMoves(){
 
@@ -85,18 +96,7 @@ public class ActionITreeAnalyze {
             System.out.println("__________Action Information End__________");
         }
     }
-    /*
-     * Maybe should be deleted
-     */
-    public List<ITree> checkRoot(ITree rootTree, int checkType, String checkLabel){
-        if(rootTree.getType()==checkType && rootTree.getLabel().equals(checkLabel)){
-            System.out.println("Found Node in Root.");
-            return null;
-        }else {
-            return rootTree.getChildren();
-        }
-    }
-    public static ITree traverseTree(ITree tree,ITree searchNode){
+    private ITree traverseTree(ITree tree,ITree searchNode){
         for (ITree t:tree.breadthFirst()) {
             if(t.getType()==searchNode.getType() && t.getLabel().equals(searchNode.getLabel()) && t.getParent().getType()==65190232){
                 System.out.println("______________________Found__________________________");
@@ -107,7 +107,7 @@ public class ActionITreeAnalyze {
         }
         return null;
     }
-    public static ITree searchParentMethodOrClass(ITree node){
+    private ITree searchParentMethodOrClass(ITree node){
         if(node.getParent().getType()==-1993687807 && node.getParent().getParent().getType()==65190232){
             return node.getParent();
         }else if(node.getParent().getType() ==65190232){
@@ -117,8 +117,16 @@ public class ActionITreeAnalyze {
         }
         return searchParentMethodOrClass(node.getParent());
     }
+    private boolean checkAction(Action a){
+        return excludePackages(a) && checkForMethod(a);
+    }
+    //Exclude packages --> only Method changes
     private boolean excludePackages(Action a){
-        return a.getNode().getType()==this.types.getTypePackage() || a.getNode().getParent().getType()==this.types.getTypePackage();
+        return !(a.getNode().getType()==this.types.getTypePackage() || a.getNode().getParent().getType()==this.types.getTypePackage());
+    }
+    //If Node is Method
+    private boolean checkForMethod(Action a){
+        return a.getNode().getType()==this.types.getTypeMethod() && a.getNode().getParent().getType()==this.types.getTypeClass();
     }
     /*
      * Maybe should be deleted
@@ -138,6 +146,17 @@ public class ActionITreeAnalyze {
                     traverseChildren(iTree.getChildren(), checkType, checkLabel);
                 }
             }
+        }
+    }
+    /*
+     * Maybe should be deleted
+     */
+    public List<ITree> checkRoot(ITree rootTree, int checkType, String checkLabel){
+        if(rootTree.getType()==checkType && rootTree.getLabel().equals(checkLabel)){
+            System.out.println("Found Node in Root.");
+            return null;
+        }else {
+            return rootTree.getChildren();
         }
     }
 }

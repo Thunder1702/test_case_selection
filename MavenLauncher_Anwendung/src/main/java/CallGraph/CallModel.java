@@ -25,6 +25,7 @@ public class CallModel {
     private ITree iTreeOfModel;
     private List<CallNode> rootNodes;
     private ITreeTypes types;
+    private List<CallNode> nodesToTraverse;
 
     public CallModel(CtModel ctModelMain,CtModel ctModelCompleteWithTest, ITree iTree){
         this.ctModelOnlyMainAST = ctModelMain;
@@ -32,6 +33,7 @@ public class CallModel {
         this.iTreeOfModel = iTree;
         this.rootNodes = new ArrayList<>();
         this.types = new ITreeTypes();
+        this.nodesToTraverse = new ArrayList<>();
     }
     /*
      * Every single test class from package "test" is a root in a CallTree.
@@ -61,6 +63,20 @@ public class CallModel {
                 searchForInvocation(completeClazz,root);
             }
         }
+        leftNodesToTraverse();
+    }
+    private void leftNodesToTraverse(){
+        if(!this.nodesToTraverse.isEmpty()){
+            CallNode nodeToTraverse = this.nodesToTraverse.get(0);
+            this.nodesToTraverse.remove(nodeToTraverse);
+            for(CtType clazz: this.ctModelCompleteWithTestAST.getAllTypes()){
+                if(nodeToTraverse.getClassName().equals(clazz.getSimpleName())){
+                    searchForInvocation(clazz,nodeToTraverse);
+                }
+            }
+            leftNodesToTraverse();
+        }
+
     }
     private boolean filterTests(CtType c){
         for(CtType clazz: this.ctModelOnlyMainAST.getAllTypes()){
@@ -136,8 +152,7 @@ public class CallModel {
         }
     }
     private boolean checkDeclaringType(CtAbstractInvocation i){
-        CtTypeReference fromType;
-        fromType = i.getExecutable().getDeclaringType();
+        CtTypeReference fromType = i.getExecutable().getDeclaringType();
         return !isPartOfJDK(fromType.getQualifiedName());
 
     }
@@ -149,8 +164,28 @@ public class CallModel {
         currNode.addInvocation(invocation);
     }
     private CallNode createNextNode(String declaringType, CallNode currNode){
-        return new CallNode(declaringType,currNode,findITreeElement(this.iTreeOfModel,declaringType,true,""));
-        //nextNode should be also traversed fr invocations !! --> implement recursion?
+        CallNode nextNode = new CallNode(declaringType,currNode,findITreeElement(this.iTreeOfModel,declaringType,true,""));
+        if(!checkForDuplicateNodeInList(nextNode)){
+            this.nodesToTraverse.add(nextNode);
+        }
+        return nextNode;
+    }
+    private boolean checkForDuplicateNodeInList(CallNode node){
+        for(CallNode clazz: this.nodesToTraverse){
+            if(checkClassName(clazz,node) && checkITreeElement(clazz,node) && checkPreviousNode(clazz,node)){
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean checkClassName(CallNode node1, CallNode node2){
+        return node1.getClassName().equals(node2.getClassName());
+    }
+    private boolean checkITreeElement(CallNode node1, CallNode node2){
+        return node1.getITreeNode().getLabel().equals(node2.getITreeNode().getLabel()) && node1.getITreeNode().getType()==node2.getITreeNode().getType();
+    }
+    private boolean checkPreviousNode(CallNode node1, CallNode node2){
+        return checkClassName(node1.getPrevious(), node2.getPrevious()) && checkITreeElement(node1.getPrevious(), node2.getPrevious());
     }
 
     private boolean isPartOfJDK(String qualifiedName){

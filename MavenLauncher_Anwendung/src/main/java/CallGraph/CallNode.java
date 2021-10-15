@@ -52,7 +52,9 @@ public class CallNode {
     public void addInvocation(Invocation invocation) {
         this.invocationList.add(invocation);
     }
-
+    /*
+     * Maybe to delete
+     */
     public boolean isLeafNode() {
         for (Invocation invocation : this.invocationList) {
             if (invocation.getNextNode() != null) return false;

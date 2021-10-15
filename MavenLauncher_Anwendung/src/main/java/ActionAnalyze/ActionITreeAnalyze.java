@@ -59,31 +59,49 @@ public class ActionITreeAnalyze {
     private void checkInserts(){
         if(!this.inserts.isEmpty()){
             for(Action a: this.inserts){
-                //if true it is a method
-                //If Node is Method
-                if(checkAction(a)){
-                    this.checkForTestList.add(traverseTree(this.iTreeModelNew,a.getNode()));
-                }
-                //if false it is an inner element of a methode or something else
-                //If Node is not a Method
-                else {
-                    //search for parent(übergeordnete) method or class (if no parent method exists)
-                    ITree parentForSearch = searchParentMethodOrClass(a.getNode());
-                    if(parentForSearch != null){
-                        System.out.println("Test search Parent: "+ parentForSearch.toShortString());
-                        this.checkForTestList.add(traverseTree(this.iTreeModelNew,parentForSearch));
+                //Changes in Packages are not important
+                if(excludePackages(a)){
+                    //if true it is a method
+                    //If Node is Method
+                    if(checkForMethod(a)){
+                        this.checkForTestList.add(traverseTree(this.iTreeModelNew,a.getNode()));
+                    }
+                    //if false it is an inner element of a methode or something else
+                    //If Node is not a Method
+                    else {
+                        //search for parent(übergeordnete) method or class (if no parent method exists)
+                        ITree parentForSearch = searchParentMethodOrClass(a.getNode());
+                        if(parentForSearch != null){
+                            System.out.println("Test search Parent: "+ parentForSearch.toShortString());
+                            this.checkForTestList.add(traverseTree(this.iTreeModelNew,parentForSearch));
+                        }
                     }
                 }
             }
         }
     }
     private void checkMoves(){
+        if(!this.moves.isEmpty()){
+            for(Action a: this.moves){
+
+            }
+        }
 
     }
     private void checkDeletes(){
+        if(!this.deletes.isEmpty()){
+            for(Action a: this.deletes){
+
+            }
+        }
 
     }
     private void checkUpdates(){
+        if(!this.updates.isEmpty()){
+            for(Action a: this.updates){
+
+            }
+        }
 
     }
     public void outputActionInformation (List<Action> actions){
@@ -116,9 +134,6 @@ public class ActionITreeAnalyze {
             return null;
         }
         return searchParentMethodOrClass(node.getParent());
-    }
-    private boolean checkAction(Action a){
-        return excludePackages(a) && checkForMethod(a);
     }
     //Exclude packages --> only Method changes
     private boolean excludePackages(Action a){

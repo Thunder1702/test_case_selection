@@ -83,6 +83,13 @@ public class ActionITreeAnalyze {
     private void checkMoves(){
         if(!this.moves.isEmpty()){
             for(Action a: this.moves){
+                if(excludePackages(a)){
+                    if(checkForMethod(a)){
+
+                    }else {
+
+                    }
+                }
 
             }
         }
@@ -91,7 +98,13 @@ public class ActionITreeAnalyze {
     private void checkDeletes(){
         if(!this.deletes.isEmpty()){
             for(Action a: this.deletes){
+                if(excludePackages(a)){
+                    if(checkForMethod(a)){
 
+                    }else {
+
+                    }
+                }
             }
         }
 
@@ -99,7 +112,13 @@ public class ActionITreeAnalyze {
     private void checkUpdates(){
         if(!this.updates.isEmpty()){
             for(Action a: this.updates){
+                if(excludePackages(a)){
+                    if(checkForMethod(a)){
 
+                    }else {
+
+                    }
+                }
             }
         }
 
@@ -142,36 +161,5 @@ public class ActionITreeAnalyze {
     //If Node is Method
     private boolean checkForMethod(Action a){
         return a.getNode().getType()==this.types.getTypeMethod() && a.getNode().getParent().getType()==this.types.getTypeClass();
-    }
-    /*
-     * Maybe should be deleted
-     */
-    public void traverseChildren(List<ITree> childrenList,int checkType, String checkLabel){
-        for (ITree iTree : childrenList) {
-            if (iTree.getType() == checkType && iTree.getLabel().equals(checkLabel) && iTree.getParent().getType() == 65190232) {
-                System.out.println("________Found:");
-                System.out.println("Type: " + iTree.getType());
-                System.out.println("Label: " + iTree.getLabel());
-                System.out.println(iTree.toTreeString());
-                System.out.println(iTree.toShortString());
-                System.out.println("Parent: " + iTree.getParent().toShortString());
-                System.out.println("ID of Children: " + iTree.getId());
-            } else {
-                if (iTree.getChildren().size() != 0) {
-                    traverseChildren(iTree.getChildren(), checkType, checkLabel);
-                }
-            }
-        }
-    }
-    /*
-     * Maybe should be deleted
-     */
-    public List<ITree> checkRoot(ITree rootTree, int checkType, String checkLabel){
-        if(rootTree.getType()==checkType && rootTree.getLabel().equals(checkLabel)){
-            System.out.println("Found Node in Root.");
-            return null;
-        }else {
-            return rootTree.getChildren();
-        }
     }
 }

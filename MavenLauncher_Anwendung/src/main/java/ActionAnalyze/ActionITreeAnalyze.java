@@ -1,6 +1,7 @@
 package ActionAnalyze;
 
 import com.github.gumtreediff.actions.model.Action;
+import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
 
@@ -84,10 +85,32 @@ public class ActionITreeAnalyze {
         if(!this.moves.isEmpty()){
             for(Action a: this.moves){
                 if(excludePackages(a)){
+                    ITree nodeForSearchInTree = null;
                     if(checkForMethod(a)){
+                        for (Mapping m:this.matcher.getMappings()) {
+                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
+                                nodeForSearchInTree = m.getSecond();
+                            }
+                        }
+                        assert nodeForSearchInTree != null;
+                        ITree parentForSearch = searchParentMethodOrClass(nodeForSearchInTree);
+                        assert parentForSearch != null;
+                        System.out.println("Test search Parent: "+ parentForSearch.toShortString());
+                        this.checkForTestList.add(traverseTree(this.iTreeModelNew,parentForSearch));
 
                     }else {
-
+                        for(Mapping m:matcher.getMappings()){
+                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
+                                nodeForSearchInTree = m.getSecond();
+                            }
+                        }
+                        assert nodeForSearchInTree != null;
+                        if(nodeForSearchInTree.getType()!=types.getTypeClass() && nodeForSearchInTree.getType()!=types.getTypeInterface()){
+                            ITree parent = searchParentMethodOrClass(nodeForSearchInTree);
+                            assert parent != null;
+                            System.out.println("Test search Parent: "+ parent.toShortString());
+                            this.checkForTestList.add(traverseTree(this.iTreeModelNew,parent));
+                        }
                     }
                 }
 

@@ -123,9 +123,19 @@ public class ActionITreeAnalyze {
             for(Action a: this.deletes){
                 if(excludePackages(a)){
                     if(checkForMethod(a)){
-
+                        System.out.println("Method "+a.getNode()+" has been deleted.");
                     }else {
-
+                        ITree parent = searchParentMethodOrClass(a.getNode());
+                        if(parent != null && parent.getType() !=types.getTypeClass()){
+                            System.out.println(parent.toShortString());
+                            ITree mappingNode = null;
+                            for(Mapping m: matcher.getMappings()){
+                                if(m.getFirst().toShortString().equals(parent.toShortString()) && m.getFirst().getParent().getType() ==types.getTypeClass()){
+                                    mappingNode = m.getSecond();
+                                }
+                            }
+                            this.checkForTestList.add(traverseTree(this.iTreeModelNew,mappingNode));
+                        }
                     }
                 }
             }

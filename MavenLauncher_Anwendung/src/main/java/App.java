@@ -195,8 +195,9 @@ public class App {
             System.out.println(t.getParent().toShortString());
         }
         System.out.println("new output_______________________________________________");
-        actionITreeAnalyze.extractsTypesOfActions();
+        actionITreeAnalyze.analyzeActions();
         actionITreeAnalyze.printCheckForTestList();
+        Set<ITree> testCheckList = actionITreeAnalyze.getCheckForTestList();
     }
     public static ITree searchParentMethodOrClass(ITree node){
      if(node.getParent().getType()==-1993687807 && node.getParent().getParent().getType()==65190232){

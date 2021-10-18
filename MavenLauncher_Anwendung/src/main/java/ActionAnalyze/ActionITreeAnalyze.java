@@ -36,8 +36,7 @@ public class ActionITreeAnalyze {
         this.deletes = new ArrayList<>();
     }
 
-    public void extractsTypesOfActions(){
-        //maybe use this.actions not a parameter
+    public void analyzeActions(){
         int num = 0;
         for(Action a: this.actions){
             System.out.println(num+") Node: "+a.getNode().toShortString());
@@ -189,6 +188,9 @@ public class ActionITreeAnalyze {
             }
             System.out.println("_______________________________CheckForTestList____________________________");
         }
+    }
+    public Set<ITree> getCheckForTestList(){
+        return this.checkForTestList;
     }
     private void printParentForSearch(ITree parent){
         System.out.println("Test search Parent: "+ parent.toShortString());

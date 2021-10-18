@@ -1,6 +1,8 @@
 import ActionAnalyze.ActionITreeAnalyze;
+import CallGraph.CallGraphResult;
 import CallGraph.CallModel;
 import CallGraph.CallNode;
+import CallGraph.Invocation;
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.matchers.CompositeMatchers;
@@ -15,7 +17,7 @@ import spoon.reflect.CtModelImpl;
 import java.util.List;
 import java.util.Set;
 
-public class App {
+public class Main {
     public static void main(String[] args) {
 //        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc";
 //        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc_NEU";
@@ -48,14 +50,19 @@ public class App {
 //        callModel.outputModelInformation(modelNew,"modelNew");
 //        callModel.outputModelInformation(modelOld,"modelOld");
 
-        List<CallNode> list = callModel.analyze();
-        for(CallNode node: list){
+        CallGraphResult callGraphResult = callModel.analyze();
+        for(CallNode node: callGraphResult.getAllNodes()){
             System.out.println("Node Classname: "+node.getClassName());
             if(node.getPrevious() != null){
                 System.out.println("Previous: "+node.getPrevious().getClassName());
             }else {
                 System.out.println("Previous: "+node.getPrevious());
             }
+        }
+        for(Invocation i: callGraphResult.getAllInvocations()){
+            System.out.println("Method Signature: "+i.getMethodSignature());
+            System.out.println("NextNode name: "+i.getNextNode().getClassName());
+            System.out.println("Parent Node: "+i.getParentNode().getClassName());
         }
         System.out.println("________________________________________________________________________________");
 

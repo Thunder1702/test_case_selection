@@ -57,7 +57,7 @@ public class CallModel {
      * Case: One Method calls another method
      *
      */
-    public List<CallNode> analyze(){
+    public CallGraphResult analyze(){
         for(CtType completeClazz: this.ctModelCompleteWithTestAST.getAllTypes()){
             if(filterTests(completeClazz)){
                 //getSimpleName() --> only class Name without Packages.
@@ -70,7 +70,7 @@ public class CallModel {
         }
         return leftNodesToTraverse();
     }
-    private List<CallNode> leftNodesToTraverse(){
+    private CallGraphResult leftNodesToTraverse(){
         if(!this.nodesToTraverse.isEmpty()){
             CallNode nodeToTraverse = this.nodesToTraverse.get(0);
             this.nodesToTraverse.remove(nodeToTraverse);
@@ -81,7 +81,7 @@ public class CallModel {
             }
             leftNodesToTraverse();
         }
-        return this.callNodes;
+        return new CallGraphResult(this.callNodes,this.invocations);
     }
     private boolean filterTests(CtType c){
         for(CtType clazz: this.ctModelOnlyMainAST.getAllTypes()){

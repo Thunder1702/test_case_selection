@@ -20,11 +20,11 @@ public class CallModel {
     /*
      * Maybe ctModel and iTreeOfModel = final???
      */
-    private CtModel ctModelOnlyMainAST;
-    private CtModel ctModelCompleteWithTestAST;
-    private ITree iTreeOfModel;
+    private final CtModel ctModelOnlyMainAST;
+    private final CtModel ctModelCompleteWithTestAST;
+    private final ITree iTreeOfModel;
     private List<CallNode> rootNodes;
-    private ITreeTypes types;
+    private final ITreeTypes types;
     private List<CallNode> nodesToTraverse;
     private List<CallNode> callNodes;
     private List<Invocation> invocations;

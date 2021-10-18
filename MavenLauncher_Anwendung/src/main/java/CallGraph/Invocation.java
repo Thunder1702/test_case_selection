@@ -58,12 +58,6 @@ public class Invocation {
     public void setNextNode(CallNode nextNode) {
         this.nextNode = nextNode;
     }
-    /*
-     * Maybe to delete
-     */
-    public boolean isLeafInvocation() {
-        return this.nextNode == null;
-    }
 
     public void setITreeNodeMethod(ITree node){
         this.iTreeNodeMethod = node;

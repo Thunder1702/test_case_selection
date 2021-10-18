@@ -59,7 +59,6 @@ public class App {
             }else {
                 System.out.println("Previous: "+node.getPrevious());
             }
-
         }
         System.out.println("________________________________________________________________________________");
 
@@ -73,151 +72,9 @@ public class App {
         actions.forEach(System.out::println);
         System.out.println("______________________________________________________________");
 
-        ITreeTypes types = new ITreeTypes();
         ActionITreeAnalyze actionITreeAnalyze  = new ActionITreeAnalyze(rootSpoonRight,rootSpoonLeft, actions, matcher);
-
-        Set<ITree> checkForTestsList = new HashSet<>();
-        int num = 0;
-
-        for (Action a:actions) {
-            System.out.println(num+") Node: "+a.getNode().toShortString());
-            System.out.println(num+") ParentNode: "+a.getNode().getParent().toShortString());
-
-            if(a.toString().startsWith("INS")){
-                //Exclude packages --> only Method changes
-                if(!(a.getNode().getType() ==types.getTypePackage() || a.getNode().getParent().getType() ==types.getTypePackage())){
-                    //If Node is Method
-                    if(a.getNode().getType()==types.getTypeMethod() && a.getNode().getParent().getType()==types.getTypeClass()){
-                        checkForTestsList.add(traverseTree(rootSpoonRight,a.getNode()));
-                        //If Node is not a Method
-                    }else if(a.getNode().getType()!=types.getTypeMethod()){
-                        //search for parent(übergeordnete) method or class (if no parent method exists)
-                        ITree parentForSearch = searchParentMethodOrClass(a.getNode());
-                        if(parentForSearch != null){
-                            System.out.println("Test search Parent: "+ parentForSearch.toShortString());
-                            checkForTestsList.add(traverseTree(rootSpoonRight,parentForSearch));
-                        }
-                    }
-                }
-
-            }else if(a.toString().startsWith("MOV")){
-                //Exclude packages --> only Method changes
-                if(!(a.getNode().getType() == types.getTypePackage() || a.getNode().getParent().getType() == types.getTypePackage())){
-                    ITree nodeForSearchInTree = null;
-                    //If Node is Method
-                    if(a.getNode().getType()==types.getTypeMethod() && a.getNode().getParent().getType()==types.getTypeClass()){
-                        for (Mapping m:matcher.getMappings()) {
-                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
-                                nodeForSearchInTree = m.getSecond();
-                            }
-                        }
-                        assert nodeForSearchInTree != null;
-                        ITree parentForSearch = searchParentMethodOrClass(nodeForSearchInTree);
-                        assert parentForSearch != null;
-                        System.out.println("Test search Parent: "+ parentForSearch.toShortString());
-                        checkForTestsList.add(traverseTree(rootSpoonRight,parentForSearch));
-                        //If Node is not a Method
-                    }else if(a.getNode().getType()!=types.getTypeMethod()){
-                        for(Mapping m:matcher.getMappings()){
-                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
-                                nodeForSearchInTree = m.getSecond();
-                            }
-                        }
-                        assert nodeForSearchInTree != null;
-                        if(nodeForSearchInTree.getType()!=types.getTypeClass() && nodeForSearchInTree.getType()!=types.getTypeInterface()){
-                            ITree parent = searchParentMethodOrClass(nodeForSearchInTree);
-                            assert parent != null;
-                            System.out.println("Test search Parent: "+ parent.toShortString());
-                            checkForTestsList.add(traverseTree(rootSpoonRight,parent));
-                        }
-                    }
-                }
-
-            }else if(a.toString().startsWith("UPD")){
-                //Exclude packages --> only Method changes
-                if(!(a.getNode().getType() == types.getTypePackage() || a.getNode().getParent().getType() == types.getTypePackage())){
-                    ITree mappingNode = null;
-                    //If Node is Method
-                    if(a.getNode().getType()==types.getTypeMethod() && a.getNode().getParent().getType()==types.getTypeClass()){
-                        for(Mapping m:matcher.getMappings()){
-                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
-                                mappingNode = m.getSecond();
-                            }
-                        }
-                        checkForTestsList.add(traverseTree(rootSpoonRight,mappingNode));
-                        //If Node is not a Method
-                    }else if(a.getNode().getType()!=types.getTypeMethod()){
-                        for(Mapping m:matcher.getMappings()){
-                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
-                                mappingNode = m.getSecond();
-                            }
-                        }
-                        assert mappingNode != null;
-                        ITree parent = searchParentMethodOrClass(mappingNode);
-                        if(parent!= null){
-                            System.out.println("Test search Parent: "+ parent.toShortString());
-                            checkForTestsList.add(traverseTree(rootSpoonRight,parent));
-                        }
-                    }
-                }
-
-            }else if(a.toString().startsWith("DEL")){
-                //Exclude packages --> only Method changes
-                if(!(a.getNode().getType() == types.getTypePackage() || a.getNode().getParent().getType() == types.getTypePackage())){
-                    //If Node is Method --> ignored --> done by the compiler
-                    if(a.getNode().getType()==types.getTypeMethod()&& a.getNode().getParent().getType()==types.getTypeClass()){
-                        System.out.println("Method "+a.getNode()+" has been deleted.");
-                        //If Node is not a Method
-                    }else if(a.getNode().getType()!=types.getTypeMethod()){
-                        ITree parent = searchParentMethodOrClass(a.getNode());
-                        if(parent != null && parent.getType() !=types.getTypeClass()){
-                            System.out.println(parent.toShortString());
-                            ITree mappingNode = null;
-                            for(Mapping m: matcher.getMappings()){
-                                if(m.getFirst().toShortString().equals(parent.toShortString()) && m.getFirst().getParent().getType() ==types.getTypeClass()){
-                                    mappingNode = m.getSecond();
-                                }
-                            }
-                            checkForTestsList.add(traverseTree(rootSpoonRight,mappingNode));
-                        }
-                    }
-                }
-
-            }
-            num++;
-        }
-
-        System.out.println("______________________________________________________________________________________");
-        checkForTestsList.remove(null);
-        System.out.println(checkForTestsList.size());
-        for (ITree t:checkForTestsList) {
-            System.out.println(t.toShortString());
-            System.out.println(t.getParent().toShortString());
-        }
-        System.out.println("new output_______________________________________________");
         actionITreeAnalyze.analyzeActions();
         actionITreeAnalyze.printCheckForTestList();
         Set<ITree> testCheckList = actionITreeAnalyze.getCheckForTestList();
-    }
-    public static ITree searchParentMethodOrClass(ITree node){
-     if(node.getParent().getType()==-1993687807 && node.getParent().getParent().getType()==65190232){
-         return node.getParent();
-     }else if(node.getParent().getType() ==65190232){
-         return node.getParent();
-     }else if(node.getParent().getType()== -1){
-         return null;
-     }
-     return searchParentMethodOrClass(node.getParent());
-    }
-    public static ITree traverseTree(ITree tree,ITree searchNode){
-        for (ITree t:tree.breadthFirst()) {
-            if(t.getType()==searchNode.getType() && t.getLabel().equals(searchNode.getLabel()) && t.getParent().getType()==65190232){
-                System.out.println("______________________Found__________________________");
-                System.out.println("Node Found in ITree from ModelNew: "+t.toShortString());
-                System.out.println("_______________________________________________________________");
-                return t;
-            }
-        }
-        return null;
     }
 }

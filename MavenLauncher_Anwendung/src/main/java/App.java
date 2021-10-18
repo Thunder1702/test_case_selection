@@ -1,11 +1,9 @@
 import ActionAnalyze.ActionITreeAnalyze;
-import ActionAnalyze.ITreeTypes;
 import CallGraph.CallModel;
 import CallGraph.CallNode;
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.matchers.CompositeMatchers;
-import com.github.gumtreediff.matchers.Mapping;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
@@ -14,7 +12,6 @@ import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
 import spoon.reflect.CtModelImpl;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

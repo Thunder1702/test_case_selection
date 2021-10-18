@@ -1,6 +1,7 @@
 import ActionAnalyze.ActionITreeAnalyze;
 import ActionAnalyze.ITreeTypes;
 import CallGraph.CallModel;
+import CallGraph.CallNode;
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.matchers.CompositeMatchers;
@@ -50,7 +51,16 @@ public class App {
 //        callModel.outputModelInformation(modelNew,"modelNew");
 //        callModel.outputModelInformation(modelOld,"modelOld");
 
-        callModel.analyze();
+        List<CallNode> list = callModel.analyze();
+        for(CallNode node: list){
+            System.out.println("Node Classname: "+node.getClassName());
+            if(node.getPrevious() != null){
+                System.out.println("Previous: "+node.getPrevious().getClassName());
+            }else {
+                System.out.println("Previous: "+node.getPrevious());
+            }
+
+        }
         System.out.println("________________________________________________________________________________");
 
         final MappingStore mappingsComp = new MappingStore();

@@ -26,6 +26,8 @@ public class CallModel {
     private List<CallNode> rootNodes;
     private ITreeTypes types;
     private List<CallNode> nodesToTraverse;
+    private List<CallNode> callNodes;
+    private List<Invocation> invocations;
 
     public CallModel(CtModel ctModelMain,CtModel ctModelCompleteWithTest, ITree iTree){
         this.ctModelOnlyMainAST = ctModelMain;
@@ -34,6 +36,8 @@ public class CallModel {
         this.rootNodes = new ArrayList<>();
         this.types = new ITreeTypes();
         this.nodesToTraverse = new ArrayList<>();
+        this.callNodes =new ArrayList<>();
+        this.invocations = new ArrayList<>();
     }
     /*
      * Every single test class from package "test" is a root in a CallTree.
@@ -53,19 +57,20 @@ public class CallModel {
      * Case: One Method calls another method
      *
      */
-    public void analyze(){
+    public List<CallNode> analyze(){
         for(CtType completeClazz: this.ctModelCompleteWithTestAST.getAllTypes()){
             if(filterTests(completeClazz)){
                 //getSimpleName() --> only class Name without Packages.
                 System.out.println("Clazz: "+completeClazz.getSimpleName());
                 CallNode root = new CallNode(completeClazz.getSimpleName(),null,findITreeElement(this.iTreeOfModel,completeClazz.getSimpleName(),true,""));
                 this.rootNodes.add(root);
+                this.callNodes.add(root);
                 searchForInvocation(completeClazz,root);
             }
         }
-        leftNodesToTraverse();
+        return leftNodesToTraverse();
     }
-    private void leftNodesToTraverse(){
+    private List<CallNode> leftNodesToTraverse(){
         if(!this.nodesToTraverse.isEmpty()){
             CallNode nodeToTraverse = this.nodesToTraverse.get(0);
             this.nodesToTraverse.remove(nodeToTraverse);
@@ -76,7 +81,7 @@ public class CallModel {
             }
             leftNodesToTraverse();
         }
-
+        return this.callNodes;
     }
     private boolean filterTests(CtType c){
         for(CtType clazz: this.ctModelOnlyMainAST.getAllTypes()){
@@ -161,6 +166,7 @@ public class CallModel {
 
         Invocation invocation = new Invocation(getMethodSignature(i),getMethodDeclaringType(i),currNode,findITreeElement(this.iTreeOfModel,getMethodSignature(i),false, getMethodDeclaringType(i)));
         invocation.setNextNode(createNextNode(getMethodDeclaringType(i),currNode));
+        this.invocations.add(invocation);
         currNode.addInvocation(invocation);
     }
     private CallNode createNextNode(String declaringType, CallNode currNode){
@@ -168,11 +174,22 @@ public class CallModel {
         if(!checkForDuplicateNodeInList(nextNode)){
             this.nodesToTraverse.add(nextNode);
         }
+        if(!checkForDuplicateNodeInOutputList(nextNode)){
+            this.callNodes.add(nextNode);
+        }
         return nextNode;
     }
     private boolean checkForDuplicateNodeInList(CallNode node){
         for(CallNode clazz: this.nodesToTraverse){
             if(checkClassName(clazz,node) && checkITreeElement(clazz,node) && checkPreviousNode(clazz,node)){
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean checkForDuplicateNodeInOutputList(CallNode node){
+        for(CallNode n: this.callNodes){
+            if(checkClassName(n,node) && checkITreeElement(n,node) && checkPreviousNode(n,node)){
                 return true;
             }
         }

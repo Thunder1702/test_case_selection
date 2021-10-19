@@ -1,4 +1,4 @@
-package ActionAnalyze;
+package ActionChangeAnalyze;
 
 public class ITreeTypes {
     static final int typeClass = 65190232;

@@ -1,4 +1,4 @@
-package ActionAnalyze;
+package ActionChangeAnalyze;
 
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.matchers.Mapping;

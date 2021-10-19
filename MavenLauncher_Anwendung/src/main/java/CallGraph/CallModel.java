@@ -1,6 +1,6 @@
 package CallGraph;
 
-import ActionAnalyze.ITreeTypes;
+import ActionChangeAnalyze.ITreeTypes;
 import com.github.gumtreediff.tree.ITree;
 import spoon.reflect.CtModel;
 import spoon.reflect.code.CtAbstractInvocation;

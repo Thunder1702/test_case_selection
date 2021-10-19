@@ -1,8 +1,8 @@
 package SearchChangedMethodInCallGraph;
 
 public class ResultTuple {
-    private String className;
-    private String methodName;
+    private final String className;
+    private final String methodName;
 
     public ResultTuple(String clazz, String method){
         this.className = clazz;

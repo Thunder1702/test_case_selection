@@ -17,7 +17,7 @@ public class ActionITreeAnalyze {
     private final List<Action>  actions;
     private Set<ITree> checkForTestList;
     private final Matcher matcher;
-    private ITreeTypes types;
+    private final ITreeTypes types;
     private List<Action> inserts;
     private List<Action> updates;
     private List<Action> moves;

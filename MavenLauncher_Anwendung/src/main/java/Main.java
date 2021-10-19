@@ -3,6 +3,8 @@ import CallGraph.CallGraphResult;
 import CallGraph.CallModel;
 import CallGraph.CallNode;
 import CallGraph.Invocation;
+import SearchChangedMethodInCallGraph.GraphMethodSearcher;
+import SearchChangedMethodInCallGraph.ResultTuple;
 import com.github.gumtreediff.actions.ActionGenerator;
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.matchers.CompositeMatchers;
@@ -81,5 +83,12 @@ public class Main {
         actionITreeAnalyze.analyzeActions();
         actionITreeAnalyze.printCheckForTestList();
         Set<ITree> testCheckList = actionITreeAnalyze.getCheckForTestList();
+
+        GraphMethodSearcher graphMethodSearcher = new GraphMethodSearcher(testCheckList,callGraphResult);
+        List<ResultTuple> resultTupleList = graphMethodSearcher.searchInCallGraph();
+        System.out.println("To run again:");
+        for(ResultTuple r: resultTupleList){
+            System.out.println("Test Method "+r.getMethodName()+" in Class "+r.getClassName());
+        }
     }
 }

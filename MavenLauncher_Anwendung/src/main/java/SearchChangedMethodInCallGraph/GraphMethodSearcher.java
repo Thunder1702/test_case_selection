@@ -13,7 +13,7 @@ public class GraphMethodSearcher {
     private final Set<ITree> checkForTest;
     private final CallGraphResult callGraphResult;
     private final ITreeTypes iTreeTypes;
-    private List<String> testMethodsToRunAgain;
+    private List<ResultTuple> testMethodsToRunAgain;
 
     public GraphMethodSearcher(Set<ITree> checkForTest, CallGraphResult callGraphResult){
         this.checkForTest = checkForTest;
@@ -22,23 +22,36 @@ public class GraphMethodSearcher {
         this.testMethodsToRunAgain = new ArrayList<>();
     }
 
-    public void searchInCallGraph(){
-        System.out.println("searching for method...");
+    public List<ResultTuple> searchInCallGraph(){
+        System.out.println("searching for Test-Methods to run again...");
         for(ITree iTree: this.checkForTest){
-            if(checkMethodSignature(iTree)){
-
+            ResultTuple resultTuple = checkMethodSignature(iTree);
+            if(!checkForNull(resultTuple,iTree.getLabel())){
+                this.testMethodsToRunAgain.add(resultTuple);
             }
         }
+        removeNulls();
+        return this.testMethodsToRunAgain;
     }
-    private boolean checkMethodSignature(ITree iTree){
+    private ResultTuple checkMethodSignature(ITree iTree){
         for(Invocation i: this.callGraphResult.getAllInvocations()){
             if(checkTypeMethod(iTree.getType()) && i.getMethodSignature().equals(iTree.getLabel())){
-                return true;
+                return new ResultTuple(i.getParentNode().getClassName(),i.getParentMethodSignature());
             }
         }
-        return false;
+        return null;
     }
     private boolean checkTypeMethod(int type){
         return type==this.iTreeTypes.getTypeMethod();
+    }
+    private boolean checkForNull(ResultTuple resultTuple, String methodToTest){
+        if(resultTuple==null){
+            System.out.println("Method "+ methodToTest+" has not been tested");
+            return true;
+        }
+        return false;
+    }
+    private void removeNulls(){
+        this.testMethodsToRunAgain.remove(null);
     }
 }

@@ -61,6 +61,7 @@ public class Main {
         }
         for(Invocation i: callGraphResult.getAllInvocations()){
             System.out.println("Method Signature: "+i.getMethodSignature());
+            System.out.println("ParentMethodSignature: "+i.getParentMethodSignature());
             System.out.println("NextNode name: "+i.getNextNode().getClassName());
             System.out.println("Parent Node: "+i.getParentNode().getClassName());
         }

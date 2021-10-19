@@ -15,6 +15,7 @@ public class GraphMethodSearcher {
     }
 
     public void searchInCallGraph(){
+        System.out.println("searching for method...");
 
     }
 }

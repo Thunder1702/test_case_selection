@@ -112,7 +112,7 @@ public class CallModel {
                     System.out.println("ITree Element: "+t.toShortString());
                     System.out.println("ITree Element Parent: "+t.getParent().toShortString());
                     return t;
-                }else if(t.getType()==types.getTypeConstructor()&&t.getLabel().equals(searchName)&&t.getParent().getType()==types.getTypeClass()&&t.getParent().getLabel().equals(parentNameClassIfMethod)){
+                }else if(checkTypeConstructor(t.getType())&&checkLabel(searchName,t.getLabel())&&checkTypeClass(t.getParent().getType())&&checkLabel(parentNameClassIfMethod,t.getParent().getLabel())){
                     System.out.println("ITree Element: "+t.toShortString());
                     System.out.println("ITree Element Parent: "+t.getParent().toShortString());
                     return t;
@@ -130,6 +130,7 @@ public class CallModel {
     private boolean checkTypeClass(int type){
         return type==types.getTypeClass();
     }
+    private boolean checkTypeConstructor(int type){ return  type==types.getTypeConstructor();}
     private void searchForInvocation(CtType clazz, CallNode currNode){
         Set<CtMethod> methods = clazz.getMethods();
         for(CtMethod m: methods){
@@ -145,7 +146,7 @@ public class CallModel {
                     if(checkDeclaringType(i)){
                         System.out.println("DeclaringType: "+getMethodDeclaringType(i));
                         System.out.println(getMethodSignature(i));
-                        createAndAddInvocation(i,currNode);
+                        createAndAddInvocation(i,currNode, m.getSimpleName());
                     }
                 }
                 for(CtConstructorCall c:constructorCalls){
@@ -161,10 +162,10 @@ public class CallModel {
         return !isPartOfJDK(fromType.getQualifiedName());
 
     }
-    private void createAndAddInvocation(CtAbstractInvocation i, CallNode currNode){
+    private void createAndAddInvocation(CtAbstractInvocation i, CallNode currNode, String parentMethodSignature){
         System.out.println(currNode.getClassName());
 
-        Invocation invocation = new Invocation(getMethodSignature(i),getMethodDeclaringType(i),currNode,findITreeElement(this.iTreeOfModel,getMethodSignature(i),false, getMethodDeclaringType(i)));
+        Invocation invocation = new Invocation(getMethodSignature(i),getMethodDeclaringType(i),currNode,findITreeElement(this.iTreeOfModel,getMethodSignature(i),false, getMethodDeclaringType(i)), parentMethodSignature);
         invocation.setNextNode(createNextNode(getMethodDeclaringType(i),currNode));
         this.invocations.add(invocation);
         currNode.addInvocation(invocation);

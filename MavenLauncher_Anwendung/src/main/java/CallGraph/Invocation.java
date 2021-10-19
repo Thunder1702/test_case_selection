@@ -12,19 +12,22 @@ public class Invocation {
     * parentNode = Node in which starts Invocation
     * nextNode = Node which will be called from Invocation (Node in which method exists)
     * iTreeNodeMethod = ITree Element of the Method
+    * parentMethodSignature = Name of the method in which invocation of other method starts.
     */
     private String methodSignature;
     private String declaringType;
     private CallNode parentNode;
     private CallNode nextNode;
     private ITree iTreeNodeMethod;
+    private String parentMethodSignature;
 
-    public Invocation(String methodSignature, String declaringType, CallNode parentNode, ITree iTreeNodeMethod) {
+    public Invocation(String methodSignature, String declaringType, CallNode parentNode, ITree iTreeNodeMethod, String parentMethodSignature) {
         this.setMethodSignature(methodSignature);
         this.setDeclaringType(declaringType);
         this.setParentNode(parentNode);
         this.iTreeNodeMethod = iTreeNodeMethod;
         this.nextNode = null;
+        this.parentMethodSignature = parentMethodSignature;
     }
 
     public String getDeclaringType() {
@@ -65,5 +68,9 @@ public class Invocation {
 
     public ITree getITreeNodeMethod(){
         return this.iTreeNodeMethod;
+    }
+
+    public String getParentMethodSignature(){
+        return this.parentMethodSignature;
     }
 }

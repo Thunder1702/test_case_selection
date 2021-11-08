@@ -58,14 +58,16 @@ public class CallModel {
      *
      */
     public CallGraphResult analyze(){
+        System.out.println("Building Call Graph starts...\n");
         for(CtType completeClazz: this.ctModelCompleteWithTestAST.getAllTypes()){
             if(filterTests(completeClazz)){
                 //getSimpleName() --> only class Name without Packages.
-                System.out.println("Clazz: "+completeClazz.getSimpleName());
+                System.out.println("____________Analyze TestClazz: "+completeClazz.getSimpleName()+"____________");
                 CallNode root = new CallNode(completeClazz.getSimpleName(),null,findITreeElement(this.iTreeOfModel,completeClazz.getSimpleName(),true,""));
                 this.rootNodes.add(root);
                 this.callNodes.add(root);
                 searchForInvocation(completeClazz,root);
+                System.out.println("\n");
             }
         }
         return leftNodesToTraverse();
@@ -100,7 +102,7 @@ public class CallModel {
         if(isClass){
             for(ITree t: iTree.breadthFirst()){
                 if(checkTypeClass(t.getType())&& checkLabel(searchName,t.getLabel())){
-                    System.out.println("ITree Element: "+t.toShortString());
+                    System.out.println("ITree Element of "+searchName+": "+t.toShortString());
                     return t;
                 }
             }
@@ -109,12 +111,12 @@ public class CallModel {
         else {
             for(ITree t:iTree.breadthFirst()){
                 if(checkTypeMethod(t.getType()) &&checkLabel(searchName,t.getLabel()) &&checkTypeClass(t.getParent().getType())&&checkLabel(parentNameClassIfMethod,t.getParent().getLabel())){
-                    System.out.println("ITree Element: "+t.toShortString());
-                    System.out.println("ITree Element Parent: "+t.getParent().toShortString());
+                    System.out.println("ITree Element of "+searchName+ ": "+t.toShortString());
+                    System.out.println("ITree Element Parent of "+searchName+": "+t.getParent().toShortString());
                     return t;
                 }else if(checkTypeConstructor(t.getType())&&checkLabel(searchName,t.getLabel())&&checkTypeClass(t.getParent().getType())&&checkLabel(parentNameClassIfMethod,t.getParent().getLabel())){
-                    System.out.println("ITree Element: "+t.toShortString());
-                    System.out.println("ITree Element Parent: "+t.getParent().toShortString());
+                    System.out.println("ITree Element of "+searchName+": "+t.toShortString());
+                    System.out.println("ITree Element Parent of "+searchName+": "+t.getParent().toShortString());
                     return t;
                 }
             }
@@ -132,7 +134,9 @@ public class CallModel {
     }
     private boolean checkTypeConstructor(int type){ return  type==types.getTypeConstructor();}
     private void searchForInvocation(CtType clazz, CallNode currNode){
+        System.out.println("___Search for Invocation of class: "+clazz.getSimpleName()+"; currNode: "+currNode.getClassName()+"___");
         Set<CtMethod> methods = clazz.getMethods();
+        System.out.println("Methods found in clazz: "+clazz.getSimpleName());
         for(CtMethod m: methods){
             System.out.println("Method: "+m.getSimpleName());
             List<CtAbstractInvocation> methodCalls = m.getElements(new TypeFilter<>(CtAbstractInvocation.class));
@@ -144,9 +148,11 @@ public class CallModel {
                 for(CtAbstractInvocation i: methodCalls){
                     //create Invocation Method --> return Invocation
                     if(checkDeclaringType(i)){
+                        System.out.println("Invocation found in "+m.getSimpleName());
                         System.out.println("DeclaringType: "+getMethodDeclaringType(i));
-                        System.out.println(getMethodSignature(i));
+                        System.out.println("MethodSignature: "+getMethodSignature(i));
                         createAndAddInvocation(i,currNode, m.getSimpleName());
+                        System.out.println("\n");
                     }
                 }
                 for(CtConstructorCall c:constructorCalls){
@@ -163,7 +169,8 @@ public class CallModel {
 
     }
     private void createAndAddInvocation(CtAbstractInvocation i, CallNode currNode, String parentMethodSignature){
-        System.out.println(currNode.getClassName());
+        System.out.println("\nCreate Invocation of method "+getMethodSignature(i));
+        System.out.println("currNode: "+currNode.getClassName());
 
         Invocation invocation = new Invocation(getMethodSignature(i),getMethodDeclaringType(i),currNode,findITreeElement(this.iTreeOfModel,getMethodSignature(i),false, getMethodDeclaringType(i)), parentMethodSignature);
         invocation.setNextNode(createNextNode(getMethodDeclaringType(i),currNode));
@@ -171,6 +178,7 @@ public class CallModel {
         currNode.addInvocation(invocation);
     }
     private CallNode createNextNode(String declaringType, CallNode currNode){
+        System.out.println("\nCreate nextNode...");
         CallNode nextNode = new CallNode(declaringType,currNode,findITreeElement(this.iTreeOfModel,declaringType,true,""));
         if(!checkForDuplicateNodeInList(nextNode)){
             this.nodesToTraverse.add(nextNode);

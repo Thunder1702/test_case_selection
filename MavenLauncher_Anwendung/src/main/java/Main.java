@@ -27,6 +27,10 @@ public class Main {
         String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
         String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
 
+//        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_1_apache-commons-collection\\1_\\commons-collections_old";
+//        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_1_apache-commons-collection\\1_\\commons-collections_new";
+
+
         MavenLauncher launcherOld = new MavenLauncher(projectOldPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
         MavenLauncher launcherNew = new MavenLauncher(projectNewPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
         MavenLauncher launcherNewTest =new MavenLauncher(projectNewPath,MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
@@ -53,6 +57,8 @@ public class Main {
 //        callModel.outputModelInformation(modelOld,"modelOld");
 
         CallGraphResult callGraphResult = callModel.analyze();
+        System.out.println("\nResult after building Call Graph..");
+        System.out.println("Nodes...");
         for(CallNode node: callGraphResult.getAllNodes()){
             System.out.println("Node Classname: "+node.getClassName());
             if(node.getPrevious() != null){
@@ -61,13 +67,15 @@ public class Main {
                 System.out.println("Previous: "+node.getPrevious());
             }
         }
+        System.out.println("\nInvocations...");
         for(Invocation i: callGraphResult.getAllInvocations()){
             System.out.println("Method Signature: "+i.getMethodSignature());
             System.out.println("ParentMethodSignature: "+i.getParentMethodSignature());
             System.out.println("NextNode name: "+i.getNextNode().getClassName());
             System.out.println("Parent Node: "+i.getParentNode().getClassName());
+            System.out.println("\n");
         }
-        System.out.println("________________________________________________________________________________");
+        System.out.println("__________________________________Call Graph build finished__________________________________________");
 
         final MappingStore mappingsComp = new MappingStore();
         final Matcher matcher = new CompositeMatchers.ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);

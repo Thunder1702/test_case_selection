@@ -1,4 +1,5 @@
 import ActionChangeAnalyze.ActionITreeAnalyze;
+import ActionChangeAnalyze.MavenLauncherCtModelBuild;
 import CallGraph.CallGraphResult;
 import CallGraph.CallModel;
 import CallGraph.CallNode;
@@ -31,27 +32,16 @@ public class Main {
 //        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_1_apache-commons-collection\\1_\\commons-collections_new";
 
 
-        MavenLauncher launcherOld = new MavenLauncher(projectOldPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
-        MavenLauncher launcherNew = new MavenLauncher(projectNewPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
-        MavenLauncher launcherNewTest =new MavenLauncher(projectNewPath,MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
-
-        //Create AST of Project Old (ONLY Main)
-        launcherOld.buildModel();
-        CtModel modelOld = launcherOld.getModel();
-        //Create AST of Project New (ONLY Main)
-        launcherNew.buildModel();
-        CtModel modelNew = launcherNew.getModel();
-        //Create AST of project New (ALL Sources Test+Main)
-        launcherNewTest.buildModel();
-        CtModel modelNewTest = launcherNewTest.getModel();
+        MavenLauncherCtModelBuild ctModelsBuild = new MavenLauncherCtModelBuild(projectOldPath,projectNewPath);
+        ctModelsBuild.buildModels();
 
 
         final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
-        ITree rootSpoonLeft = scanner.getTree(modelOld.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
-        ITree rootSpoonRight = scanner.getTree(modelNew.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
-        ITree completeModelNewITree = scanner.getTree(modelNewTest.getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
+        ITree rootSpoonLeft = scanner.getTree(ctModelsBuild.getModelOld().getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
+        ITree rootSpoonRight = scanner.getTree(ctModelsBuild.getModelNew().getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
+        ITree completeModelNewITree = scanner.getTree(ctModelsBuild.getModelNewTest().getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
 
-        CallModel callModel = new CallModel(modelNew,modelNewTest,completeModelNewITree);
+        CallModel callModel = new CallModel(ctModelsBuild.getModelNew(),ctModelsBuild.getModelNewTest(),completeModelNewITree);
 //        callModel.outputModelInformation(modelNewTest, "modelNewTest");
 //        callModel.outputModelInformation(modelNew,"modelNew");
 //        callModel.outputModelInformation(modelOld,"modelOld");

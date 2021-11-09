@@ -66,8 +66,9 @@ public class CallModel {
                 CallNode root = new CallNode(completeClazz.getSimpleName(),null,findITreeElement(this.iTreeOfModel,completeClazz.getSimpleName(),true,""));
                 this.rootNodes.add(root);
                 this.callNodes.add(root);
+                System.out.println("1) Create root Node: "+root.getClassName());
                 searchForInvocation(completeClazz,root);
-                System.out.println("\n");
+                System.out.println("______________Finish Analyze TestClazz: "+completeClazz.getSimpleName()+"__________\n");
             }
         }
         return leftNodesToTraverse();
@@ -134,7 +135,7 @@ public class CallModel {
     }
     private boolean checkTypeConstructor(int type){ return  type==types.getTypeConstructor();}
     private void searchForInvocation(CtType clazz, CallNode currNode){
-        System.out.println("___Search for Invocation of class: "+clazz.getSimpleName()+"; currNode: "+currNode.getClassName()+"___");
+        System.out.println("2) Search for Invocation in class: "+clazz.getSimpleName()+"; currNode: "+currNode.getClassName());
         Set<CtMethod> methods = clazz.getMethods();
         System.out.println("Methods found in clazz: "+clazz.getSimpleName());
         for(CtMethod m: methods){
@@ -148,9 +149,9 @@ public class CallModel {
                 for(CtAbstractInvocation i: methodCalls){
                     //create Invocation Method --> return Invocation
                     if(checkDeclaringType(i)){
-                        System.out.println("Invocation found in "+m.getSimpleName());
-                        System.out.println("DeclaringType: "+getMethodDeclaringType(i));
-                        System.out.println("MethodSignature: "+getMethodSignature(i));
+                        System.out.println("Invocation found in method: "+m.getSimpleName());
+                        System.out.println("Invocation DeclaringType: "+getMethodDeclaringType(i));
+                        System.out.println("Invocation MethodSignature: "+getMethodSignature(i));
                         createAndAddInvocation(i,currNode, m.getSimpleName());
                         System.out.println("\n");
                     }
@@ -169,7 +170,7 @@ public class CallModel {
 
     }
     private void createAndAddInvocation(CtAbstractInvocation i, CallNode currNode, String parentMethodSignature){
-        System.out.println("\nCreate Invocation of method "+getMethodSignature(i));
+        System.out.println("\n3) Create Invocation of method "+getMethodSignature(i));
         System.out.println("currNode: "+currNode.getClassName());
 
         Invocation invocation = new Invocation(getMethodSignature(i),getMethodDeclaringType(i),currNode,findITreeElement(this.iTreeOfModel,getMethodSignature(i),false, getMethodDeclaringType(i)), parentMethodSignature);
@@ -178,8 +179,9 @@ public class CallModel {
         currNode.addInvocation(invocation);
     }
     private CallNode createNextNode(String declaringType, CallNode currNode){
-        System.out.println("\nCreate nextNode...");
+        System.out.println("\n4) Create nextNode...");
         CallNode nextNode = new CallNode(declaringType,currNode,findITreeElement(this.iTreeOfModel,declaringType,true,""));
+        System.out.println("nextNode: "+nextNode.getClassName()+" previous of nextNode: "+ nextNode.getPrevious().getClassName());
         if(!checkForDuplicateNodeInList(nextNode)){
             this.nodesToTraverse.add(nextNode);
         }
@@ -189,6 +191,7 @@ public class CallModel {
         return nextNode;
     }
     private boolean checkForDuplicateNodeInList(CallNode node){
+        System.out.println("5) Check for duplicate Node in List(nodesToTraverse)");
         for(CallNode clazz: this.nodesToTraverse){
             if(checkClassName(clazz,node) && checkITreeElement(clazz,node) && checkPreviousNode(clazz,node)){
                 return true;
@@ -197,6 +200,8 @@ public class CallModel {
         return false;
     }
     private boolean checkForDuplicateNodeInOutputList(CallNode node){
+        System.out.println("6) Check for duplicate Node in OutputList");
+        System.out.println(callNodes.size());
         for(CallNode n: this.callNodes){
             if(checkClassName(n,node) && checkITreeElement(n,node) && checkPreviousNode(n,node)){
                 return true;
@@ -205,12 +210,19 @@ public class CallModel {
         return false;
     }
     private boolean checkClassName(CallNode node1, CallNode node2){
+        System.out.println("200) check class Name (equal)");
         return node1.getClassName().equals(node2.getClassName());
     }
     private boolean checkITreeElement(CallNode node1, CallNode node2){
         return node1.getITreeNode().getLabel().equals(node2.getITreeNode().getLabel()) && node1.getITreeNode().getType()==node2.getITreeNode().getType();
     }
     private boolean checkPreviousNode(CallNode node1, CallNode node2){
+        System.out.println("100) check previous Node");
+        //If invocation to itself exists, and itself is a rootNode
+        if(node1.getPrevious() == null && node2.getPrevious() != null){
+            return false;
+        }
+
         return checkClassName(node1.getPrevious(), node2.getPrevious()) && checkITreeElement(node1.getPrevious(), node2.getPrevious());
     }
 

@@ -3,8 +3,6 @@ import ActionChangeAnalyze.ITreeBuilder;
 import ActionChangeAnalyze.MavenLauncherCtModelsBuild;
 import CallGraph.CallGraphResult;
 import CallGraph.CallModel;
-import CallGraph.CallNode;
-import CallGraph.Invocation;
 import SearchChangedMethodInCallGraph.GraphMethodSearcher;
 import SearchChangedMethodInCallGraph.ResultTuple;
 import com.github.gumtreediff.actions.ActionGenerator;
@@ -13,8 +11,6 @@ import com.github.gumtreediff.matchers.CompositeMatchers;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
-import gumtree.spoon.builder.SpoonGumTreeBuilder;
-import spoon.reflect.CtModelImpl;
 
 import java.util.List;
 import java.util.Set;
@@ -43,23 +39,8 @@ public class Main {
 
         CallGraphResult callGraphResult = callModel.analyze();
         System.out.println("\nResult after building Call Graph..");
-        System.out.println("Nodes...");
-        for(CallNode node: callGraphResult.getAllNodes()){
-            System.out.println("Node Classname: "+node.getClassName());
-            if(node.getPrevious() != null){
-                System.out.println("Previous: "+node.getPrevious().getClassName());
-            }else {
-                System.out.println("Previous: "+node.getPrevious());
-            }
-        }
-        System.out.println("\nInvocations...");
-        for(Invocation i: callGraphResult.getAllInvocations()){
-            System.out.println("Method Signature: "+i.getMethodSignature());
-            System.out.println("ParentMethodSignature: "+i.getParentMethodSignature());
-            System.out.println("NextNode name: "+i.getNextNode().getClassName());
-            System.out.println("Parent Node: "+i.getParentNode().getClassName());
-            System.out.println("\n");
-        }
+        callGraphResult.printNodes();
+        callGraphResult.printInvocations();
         System.out.println("__________________________________Call Graph build finished__________________________________________");
 
         final MappingStore mappingsComp = new MappingStore();

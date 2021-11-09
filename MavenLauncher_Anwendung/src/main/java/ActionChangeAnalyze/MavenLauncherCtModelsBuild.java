@@ -3,14 +3,14 @@ package ActionChangeAnalyze;
 import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
 
-public class MavenLauncherCtModelBuild {
-    String projectOldPath = "";
-    String projectNewPath = "";
-    CtModel modelOld;
-    CtModel modelNew;
-    CtModel modelNewTest;
+public class MavenLauncherCtModelsBuild {
+    private String projectOldPath;
+    private String projectNewPath;
+    private CtModel modelOld;
+    private CtModel modelNew;
+    private CtModel modelNewTest;
 
-    public MavenLauncherCtModelBuild(String projectOldPath, String projectNewPath){
+    public MavenLauncherCtModelsBuild(String projectOldPath, String projectNewPath){
         this.projectNewPath = projectNewPath;
         this.projectOldPath = projectOldPath;
     }
@@ -35,9 +35,9 @@ public class MavenLauncherCtModelBuild {
         return this.modelOld;
     }
     public CtModel getModelNew(){
-        return this.modelNew;
+        return modelNew;
     }
     public  CtModel getModelNewTest(){
-        return this.modelNewTest;
+        return modelNewTest;
     }
 }

@@ -1,5 +1,6 @@
 import ActionChangeAnalyze.ActionITreeAnalyze;
-import ActionChangeAnalyze.MavenLauncherCtModelBuild;
+import ActionChangeAnalyze.ITreeBuilder;
+import ActionChangeAnalyze.MavenLauncherCtModelsBuild;
 import CallGraph.CallGraphResult;
 import CallGraph.CallModel;
 import CallGraph.CallNode;
@@ -13,8 +14,6 @@ import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
 import gumtree.spoon.builder.SpoonGumTreeBuilder;
-import spoon.MavenLauncher;
-import spoon.reflect.CtModel;
 import spoon.reflect.CtModelImpl;
 
 import java.util.List;
@@ -32,16 +31,12 @@ public class Main {
 //        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_1_apache-commons-collection\\1_\\commons-collections_new";
 
 
-        MavenLauncherCtModelBuild ctModelsBuild = new MavenLauncherCtModelBuild(projectOldPath,projectNewPath);
+        MavenLauncherCtModelsBuild ctModelsBuild = new MavenLauncherCtModelsBuild(projectOldPath,projectNewPath);
         ctModelsBuild.buildModels();
 
+        ITreeBuilder iTreeBuilder = new ITreeBuilder(ctModelsBuild.getModelOld(),ctModelsBuild.getModelNew(),ctModelsBuild.getModelNewTest());
 
-        final SpoonGumTreeBuilder scanner = new SpoonGumTreeBuilder();
-        ITree rootSpoonLeft = scanner.getTree(ctModelsBuild.getModelOld().getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
-        ITree rootSpoonRight = scanner.getTree(ctModelsBuild.getModelNew().getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
-        ITree completeModelNewITree = scanner.getTree(ctModelsBuild.getModelNewTest().getElements(ctElement -> ctElement instanceof CtModelImpl.CtRootPackage).get(0));
-
-        CallModel callModel = new CallModel(ctModelsBuild.getModelNew(),ctModelsBuild.getModelNewTest(),completeModelNewITree);
+        CallModel callModel = new CallModel(ctModelsBuild.getModelNew(),ctModelsBuild.getModelNewTest(),iTreeBuilder.getCompleteModelNewITree());
 //        callModel.outputModelInformation(modelNewTest, "modelNewTest");
 //        callModel.outputModelInformation(modelNew,"modelNew");
 //        callModel.outputModelInformation(modelOld,"modelOld");
@@ -68,16 +63,16 @@ public class Main {
         System.out.println("__________________________________Call Graph build finished__________________________________________");
 
         final MappingStore mappingsComp = new MappingStore();
-        final Matcher matcher = new CompositeMatchers.ClassicGumtree(rootSpoonLeft, rootSpoonRight, mappingsComp);
+        final Matcher matcher = new CompositeMatchers.ClassicGumtree(iTreeBuilder.getRootSpoonLeft(),iTreeBuilder.getRootSpoonRight(), mappingsComp);
         matcher.match();
 
-        final ActionGenerator actionGenerator = new ActionGenerator(rootSpoonLeft, rootSpoonRight, matcher.getMappings());
+        final ActionGenerator actionGenerator = new ActionGenerator(iTreeBuilder.getRootSpoonLeft(), iTreeBuilder.getRootSpoonRight(), matcher.getMappings());
         List<Action> actions = actionGenerator.generate();
 
         actions.forEach(System.out::println);
         System.out.println("______________________________________________________________");
 
-        ActionITreeAnalyze actionITreeAnalyze  = new ActionITreeAnalyze(rootSpoonRight,rootSpoonLeft, actions, matcher);
+        ActionITreeAnalyze actionITreeAnalyze  = new ActionITreeAnalyze(iTreeBuilder.getRootSpoonRight(),iTreeBuilder.getRootSpoonLeft(), actions, matcher);
         actionITreeAnalyze.analyzeActions();
         actionITreeAnalyze.printCheckForTestList();
         Set<ITree> testCheckList = actionITreeAnalyze.getCheckForTestList();

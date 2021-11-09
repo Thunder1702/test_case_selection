@@ -166,6 +166,7 @@ public class CallModel {
     }
     private boolean checkDeclaringType(CtAbstractInvocation i){
         CtTypeReference fromType = i.getExecutable().getDeclaringType();
+        System.out.println("Qualified name: "+fromType.getQualifiedName());
         return !isPartOfJDK(fromType.getQualifiedName());
 
     }
@@ -210,14 +211,12 @@ public class CallModel {
         return false;
     }
     private boolean checkClassName(CallNode node1, CallNode node2){
-        System.out.println("200) check class Name (equal)");
         return node1.getClassName().equals(node2.getClassName());
     }
     private boolean checkITreeElement(CallNode node1, CallNode node2){
         return node1.getITreeNode().getLabel().equals(node2.getITreeNode().getLabel()) && node1.getITreeNode().getType()==node2.getITreeNode().getType();
     }
     private boolean checkPreviousNode(CallNode node1, CallNode node2){
-        System.out.println("100) check previous Node");
         //If invocation to itself exists, and itself is a rootNode
         if(node1.getPrevious() == null && node2.getPrevious() != null){
             return false;
@@ -232,7 +231,7 @@ public class CallModel {
                 || (qualifiedName.startsWith("oracle.")) || (qualifiedName.startsWith("org.xml"))
                 || (qualifiedName.startsWith("com.oracle.")) || (qualifiedName.startsWith("jdk."))
                 || (qualifiedName.startsWith("javax.xml.stream.")) || (qualifiedName.startsWith("javax.xml.transform."))
-                || (qualifiedName.startsWith("org.w3c.dom."))) || (qualifiedName.startsWith("org.junit"));
+                || (qualifiedName.startsWith("org.w3c.dom."))) || (qualifiedName.startsWith("org.junit")) || (qualifiedName.startsWith("junit."));
     }
     private String getMethodSignature(CtAbstractInvocation element){
         return element.getExecutable().getSimpleName();

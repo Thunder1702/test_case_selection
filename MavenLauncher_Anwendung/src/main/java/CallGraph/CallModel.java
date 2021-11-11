@@ -86,7 +86,7 @@ public class CallModel {
             }
             leftNodesToTraverse();
         }
-        System.out.println("Finished bulding CallGraph...");
+        System.out.println("Finished building CallGraph...");
         return new CallGraphResult(this.callNodes,this.invocations);
     }
     private boolean filterTests(CtType c){

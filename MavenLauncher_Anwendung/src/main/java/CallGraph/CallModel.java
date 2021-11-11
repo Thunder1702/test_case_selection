@@ -73,6 +73,8 @@ public class CallModel {
         }
         return leftNodesToTraverse();
     }
+
+
     private CallGraphResult leftNodesToTraverse(){
         if(!this.nodesToTraverse.isEmpty()){
             CallNode nodeToTraverse = this.nodesToTraverse.get(0);
@@ -84,6 +86,7 @@ public class CallModel {
             }
             leftNodesToTraverse();
         }
+        System.out.println("Finished bulding CallGraph...");
         return new CallGraphResult(this.callNodes,this.invocations);
     }
     private boolean filterTests(CtType c){
@@ -122,6 +125,7 @@ public class CallModel {
                 }
             }
         }
+        System.out.println("No ITree Element for "+searchName+" found...");
         return null;
     }
     private  boolean checkLabel(String name, String iTreeLabel){

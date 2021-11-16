@@ -53,12 +53,11 @@ public class CallModel {
      * 3) Add the right ITree element from Method which exists nextNode class
      * Now Invocation is complete (has parent and nextNode and ITree element) --> add in List of Tree
      *
-     * Now update this:
-     * Case: One Method calls another method
      *
      */
     public CallGraphResult analyze(){
         System.out.println("Building Call Graph starts...\n");
+        //getAllTypes() --> nur die Top-Level Klassen oder alle?
         for(CtType completeClazz: this.ctModelCompleteWithTestAST.getAllTypes()){
             if(filterTests(completeClazz)){
                 //getSimpleName() --> only class Name without Packages.
@@ -125,9 +124,20 @@ public class CallModel {
                 }
             }
         }
+        //System.out.println("No ITree Element for "+searchName+" found...");
+        return findITreeElementOther(searchName);
+    }
+
+    private ITree findITreeElementOther(String searchName){
+        for (ITree iTree: this.iTreeOfModel.breadthFirst()){
+            if(iTree.getLabel().equals(searchName)){
+                return iTree;
+            }
+        }
         System.out.println("No ITree Element for "+searchName+" found...");
         return null;
     }
+
     private  boolean checkLabel(String name, String iTreeLabel){
         return iTreeLabel.equals(name);
     }
@@ -197,7 +207,9 @@ public class CallModel {
     }
     private boolean checkForDuplicateNodeInList(CallNode node){
         System.out.println("5) Check for duplicate Node in List(nodesToTraverse)");
+        System.out.println(this.nodesToTraverse.size());
         for(CallNode clazz: this.nodesToTraverse){
+            //vielleicht nur className checken, wenn die Klasse schon vorkommt nicht nochmal durchgehen?
             if(checkClassName(clazz,node) && checkITreeElement(clazz,node) && checkPreviousNode(clazz,node)){
                 return true;
             }
@@ -206,7 +218,6 @@ public class CallModel {
     }
     private boolean checkForDuplicateNodeInOutputList(CallNode node){
         System.out.println("6) Check for duplicate Node in OutputList");
-        System.out.println(callNodes.size());
         for(CallNode n: this.callNodes){
             if(checkClassName(n,node) && checkITreeElement(n,node) && checkPreviousNode(n,node)){
                 return true;
@@ -235,7 +246,9 @@ public class CallModel {
                 || (qualifiedName.startsWith("oracle.")) || (qualifiedName.startsWith("org.xml"))
                 || (qualifiedName.startsWith("com.oracle.")) || (qualifiedName.startsWith("jdk."))
                 || (qualifiedName.startsWith("javax.xml.stream.")) || (qualifiedName.startsWith("javax.xml.transform."))
-                || (qualifiedName.startsWith("org.w3c.dom."))) || (qualifiedName.startsWith("org.junit")) || (qualifiedName.startsWith("junit."));
+                || (qualifiedName.startsWith("org.w3c.dom."))) || (qualifiedName.startsWith("org.junit"))
+                || (qualifiedName.startsWith("junit.")) || (qualifiedName.startsWith("org.hamcrest"))
+                || (qualifiedName.startsWith("org.easymock"));
     }
     private String getMethodSignature(CtAbstractInvocation element){
         return element.getExecutable().getSimpleName();

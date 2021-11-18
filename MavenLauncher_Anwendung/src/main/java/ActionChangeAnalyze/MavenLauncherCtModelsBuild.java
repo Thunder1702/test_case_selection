@@ -20,6 +20,9 @@ public class MavenLauncherCtModelsBuild {
         MavenLauncher launcherNew = new MavenLauncher(projectNewPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
         MavenLauncher launcherNewTest =new MavenLauncher(projectNewPath,MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
 
+        //No dependencies?? maybe fixes the problem
+        //launcher.getEnvironment().setNoClasspath(true);
+
         //Create AST of Project Old (ONLY Main)
         launcherOld.buildModel();
         this.modelOld = launcherOld.getModel();

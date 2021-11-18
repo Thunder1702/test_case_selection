@@ -23,8 +23,8 @@ public class Main {
 //        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
 //        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
 
-        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\3_\\commons-lang_old";
-        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\3_\\commons-lang_new";
+        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_3_hibernate-hibernate-search\\1_\\hibernate-search_new";
+        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_3_hibernate-hibernate-search\\1_\\hibernate-search_old";
 
         MavenLauncherCtModelsBuild ctModelsBuild = new MavenLauncherCtModelsBuild(projectOldPath,projectNewPath);
         ctModelsBuild.buildModels();

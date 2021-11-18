@@ -39,6 +39,7 @@ public class ActionITreeAnalyze {
     public void analyzeActions(){
         int num = 0;
         System.out.println("Analyze starts ...");
+        System.out.println("Number of Actions: "+this.actions.size());
         for(Action a: this.actions){
             System.out.println(num+") Node: "+a.getNode().toShortString());
             System.out.println(num+") ParentNode: "+a.getNode().getParent().toShortString());

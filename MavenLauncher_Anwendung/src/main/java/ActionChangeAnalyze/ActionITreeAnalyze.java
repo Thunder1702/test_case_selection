@@ -38,141 +38,121 @@ public class ActionITreeAnalyze {
 
     public void analyzeActions(){
         int num = 0;
+        System.out.println("Analyze starts ...");
         for(Action a: this.actions){
             System.out.println(num+") Node: "+a.getNode().toShortString());
             System.out.println(num+") ParentNode: "+a.getNode().getParent().toShortString());
+
             if(a.toString().startsWith("INS")){
-                this.inserts.add(a);
+                checkInserts(a);
             }else if(a.toString().startsWith("MOV")){
-                this.moves.add(a);
+                checkMoves(a);
             }else if(a.toString().startsWith("DEL")){
-                this.deletes.add(a);
+                checkDeletes(a);
             }else if(a.toString().startsWith("UPD")){
-                this.updates.add(a);
+                checkUpdates(a);
             }
             num++;
         }
-        System.out.println("Analyze starts ...");
-        checkInserts();
-        checkMoves();
-        checkDeletes();
-        checkUpdates();
     }
-    private void checkInserts(){
+    private void checkInserts(Action a){
         System.out.println("______________________________INS Start__________________________________");
-        if(!this.inserts.isEmpty()){
-            for(Action a: this.inserts){
-                //Changes in Packages are not important
-                if(excludePackages(a)){
-                    //if true it is a method
-                    //If Node is Method
-                    if(checkForMethod(a)){
-                        this.checkForTestList.add(traverseTree(this.iTreeModelNew,a.getNode()));
-                    }
-                    //if false it is an inner element of a methode or something else
-                    //If Node is not a Method
-                    else {
-                        //search for parent(übergeordnete) method or class (if no parent method exists)
-                        ITree parentForSearch = searchParentMethodOrClass(a.getNode());
-                        if(parentForSearch != null){
+        //Changes in Packages are not important
+        if(excludePackages(a)){
+            //if true it is a method
+            //If Node is Method
+            if(checkForMethod(a)){
+                this.checkForTestList.add(traverseTree(this.iTreeModelNew,a.getNode()));
+            }
+            //if false it is an inner element of a methode or something else
+            //If Node is not a Method
+            else {
+                //search for parent(übergeordnete) method or class (if no parent method exists)
+                ITree parentForSearch = searchParentMethodOrClass(a.getNode());
+                if(parentForSearch != null){
 //                            printParentForSearch(parentForSearch);
-                            this.checkForTestList.add(traverseTree(this.iTreeModelNew,parentForSearch));
-                        }
-                    }
+                    this.checkForTestList.add(traverseTree(this.iTreeModelNew,parentForSearch));
                 }
             }
         }
         System.out.println("______________________________INS End__________________________________");
     }
-    private void checkMoves(){
+    private void checkMoves(Action a){
         System.out.println("______________________________MOV Start__________________________________");
-        if(!this.moves.isEmpty()){
-            for(Action a: this.moves){
-                if(excludePackages(a)){
-                    ITree nodeForSearchInTree = null;
-                    if(checkForMethod(a)){
-                        for (Mapping m:this.matcher.getMappings()) {
-                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
-                                nodeForSearchInTree = m.getSecond();
-                            }
-                        }
-                        assert nodeForSearchInTree != null;
-                        ITree parentForSearch = searchParentMethodOrClass(nodeForSearchInTree);
-                        assert parentForSearch != null;
-//                        printParentForSearch(parentForSearch);
-                        this.checkForTestList.add(traverseTree(this.iTreeModelNew,parentForSearch));
-
-                    }else {
-                        for(Mapping m:matcher.getMappings()){
-                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
-                                nodeForSearchInTree = m.getSecond();
-                            }
-                        }
-                        assert nodeForSearchInTree != null;
-                        if(nodeForSearchInTree.getType()!=types.getTypeClass() && nodeForSearchInTree.getType()!=types.getTypeInterface()){
-                            ITree parent = searchParentMethodOrClass(nodeForSearchInTree);
-                            assert parent != null;
-//                            printParentForSearch(parent);
-                            this.checkForTestList.add(traverseTree(this.iTreeModelNew,parent));
-                        }
+        if(excludePackages(a)){
+            ITree nodeForSearchInTree = null;
+            if(checkForMethod(a)){
+                for (Mapping m:this.matcher.getMappings()) {
+                    if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
+                        nodeForSearchInTree = m.getSecond();
                     }
                 }
+                assert nodeForSearchInTree != null;
+                ITree parentForSearch = searchParentMethodOrClass(nodeForSearchInTree);
+                assert parentForSearch != null;
+//                        printParentForSearch(parentForSearch);
+                this.checkForTestList.add(traverseTree(this.iTreeModelNew,parentForSearch));
 
+            }else {
+                for(Mapping m:matcher.getMappings()){
+                    if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
+                        nodeForSearchInTree = m.getSecond();
+                    }
+                }
+                assert nodeForSearchInTree != null;
+                if(nodeForSearchInTree.getType()!=types.getTypeClass() && nodeForSearchInTree.getType()!=types.getTypeInterface()){
+                    ITree parent = searchParentMethodOrClass(nodeForSearchInTree);
+                    assert parent != null;
+//                            printParentForSearch(parent);
+                    this.checkForTestList.add(traverseTree(this.iTreeModelNew,parent));
+                }
             }
         }
         System.out.println("______________________________MOV End__________________________________");
     }
-    private void checkDeletes(){
+    private void checkDeletes(Action a){
         System.out.println("______________________________DEL Start__________________________________");
-        if(!this.deletes.isEmpty()){
-            for(Action a: this.deletes){
-                if(excludePackages(a)){
-                    if(checkForMethod(a)){
-                        System.out.println("Method "+a.getNode().toShortString()+" has been deleted.");
-                    }else {
-                        ITree parent = searchParentMethodOrClass(a.getNode());
-                        if(parent != null && parent.getType() !=types.getTypeClass()){
+        if(excludePackages(a)){
+            if(checkForMethod(a)){
+                System.out.println("Method "+a.getNode().toShortString()+" has been deleted.");
+            }else {
+                ITree parent = searchParentMethodOrClass(a.getNode());
+                if(parent != null && parent.getType() !=types.getTypeClass()){
 //                            printParentForSearch(parent);
-                            ITree mappingNode = null;
-                            for(Mapping m: matcher.getMappings()){
-                                if(m.getFirst().toShortString().equals(parent.toShortString()) && m.getFirst().getParent().getType() ==types.getTypeClass()){
-                                    mappingNode = m.getSecond();
-                                }
-                            }
-                            this.checkForTestList.add(traverseTree(this.iTreeModelNew,mappingNode));
+                    ITree mappingNode = null;
+                    for(Mapping m: matcher.getMappings()){
+                        if(m.getFirst().toShortString().equals(parent.toShortString()) && m.getFirst().getParent().getType() ==types.getTypeClass()){
+                            mappingNode = m.getSecond();
                         }
                     }
+                    this.checkForTestList.add(traverseTree(this.iTreeModelNew,mappingNode));
                 }
             }
         }
         System.out.println("______________________________DEL End__________________________________");
     }
-    private void checkUpdates(){
+    private void checkUpdates(Action a){
         System.out.println("______________________________UPD Start__________________________________");
-        if(!this.updates.isEmpty()){
-            for(Action a: this.updates){
-                if(excludePackages(a)){
-                    ITree mappingNode = null;
-                    if(checkForMethod(a)){
-                        for(Mapping m:matcher.getMappings()){
-                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
-                                mappingNode = m.getSecond();
-                            }
-                        }
-                        this.checkForTestList.add(traverseTree(this.iTreeModelNew,mappingNode));
-                    }else {
-                        for(Mapping m:matcher.getMappings()){
-                            if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
-                                mappingNode = m.getSecond();
-                            }
-                        }
-                        assert mappingNode != null;
-                        ITree parent = searchParentMethodOrClass(mappingNode);
-                        if(parent!= null){
-//                            printParentForSearch(parent);
-                            this.checkForTestList.add(traverseTree(this.iTreeModelNew,parent));
-                        }
+        if(excludePackages(a)){
+            ITree mappingNode = null;
+            if(checkForMethod(a)){
+                for(Mapping m:matcher.getMappings()){
+                    if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
+                        mappingNode = m.getSecond();
                     }
+                }
+                this.checkForTestList.add(traverseTree(this.iTreeModelNew,mappingNode));
+            }else {
+                for(Mapping m:matcher.getMappings()){
+                    if(m.getFirst().toShortString().equals(a.getNode().toShortString())){
+                        mappingNode = m.getSecond();
+                    }
+                }
+                assert mappingNode != null;
+                ITree parent = searchParentMethodOrClass(mappingNode);
+                if(parent!= null){
+//                            printParentForSearch(parent);
+                    this.checkForTestList.add(traverseTree(this.iTreeModelNew,parent));
                 }
             }
         }

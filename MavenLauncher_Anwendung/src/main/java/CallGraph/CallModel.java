@@ -9,6 +9,7 @@ import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.reference.CtTypeReference;
+import spoon.reflect.visitor.filter.NamedElementFilter;
 import spoon.reflect.visitor.filter.TypeFilter;
 
 import java.util.ArrayList;
@@ -77,8 +78,10 @@ public class CallModel {
     private CallGraphResult leftNodesToTraverse(){
         if(!this.nodesToTraverse.isEmpty()){
             CallNode nodeToTraverse = this.nodesToTraverse.get(0);
+            String nameClass = nodeToTraverse.getClassName();
             this.nodesToTraverse.remove(nodeToTraverse);
-            for(CtType clazz: this.ctModelCompleteWithTestAST.getAllTypes()){
+            for(Object type: this.ctModelCompleteWithTestAST.filterChildren(new NamedElementFilter<>(CtType.class,nameClass)).list()){
+                CtType clazz = (CtType) type;
                 if(nodeToTraverse.getClassName().equals(clazz.getSimpleName())){
                     searchForInvocation(clazz,nodeToTraverse);
                 }
@@ -88,6 +91,11 @@ public class CallModel {
         System.out.println("Finished building CallGraph...");
         return new CallGraphResult(this.callNodes,this.invocations);
     }
+    /*
+     * check if Class is a Test or a Main Class
+     * if test class --> return true
+     * if main class --> return false
+     */
     private boolean filterTests(CtType c){
         for(CtType clazz: this.ctModelOnlyMainAST.getAllTypes()){
             if(c.getSimpleName().equals(clazz.getSimpleName())){
@@ -148,6 +156,7 @@ public class CallModel {
         return type==types.getTypeClass();
     }
     private boolean checkTypeConstructor(int type){ return  type==types.getTypeConstructor();}
+
     private void searchForInvocation(CtType clazz, CallNode currNode){
         System.out.println("2) Search for Invocation in class: "+clazz.getSimpleName()+"; currNode: "+currNode.getClassName());
         Set<CtMethod> methods = clazz.getMethods();
@@ -173,8 +182,6 @@ public class CallModel {
                 for(CtConstructorCall c:constructorCalls){
                     System.out.println("Constructor: "+c.getExecutable().getSimpleName());
                 }
-                //add Invocation
-                //create new CallNode (=nextNode from Invocation and previousNode = currNode)
             }
         }
     }
@@ -207,10 +214,13 @@ public class CallModel {
     }
     private boolean checkForDuplicateNodeInList(CallNode node){
         System.out.println("5) Check for duplicate Node in List(nodesToTraverse)");
-        System.out.println(this.nodesToTraverse.size());
         for(CallNode clazz: this.nodesToTraverse){
             //vielleicht nur className checken, wenn die Klasse schon vorkommt nicht nochmal durchgehen?
             if(checkClassName(clazz,node) && checkITreeElement(clazz,node) && checkPreviousNode(clazz,node)){
+                return true;
+            }
+            //check only class name, because if this class is in list, we do not need to loop again over it
+            else if(checkClassName(clazz,node)){
                 return true;
             }
         }

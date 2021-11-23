@@ -39,10 +39,10 @@ public class ActionITreeAnalyze {
     public void analyzeActions(){
         int num = 0;
         System.out.println("Analyze starts ...");
-        System.out.println("Number of Actions: "+this.actions.size());
+//        System.out.println("Number of Actions: "+this.actions.size());
         for(Action a: this.actions){
-            System.out.println(num+") Node: "+a.getNode().toShortString());
-            System.out.println(num+") ParentNode: "+a.getNode().getParent().toShortString());
+//            System.out.println(num+") Node: "+a.getNode().toShortString());
+//            System.out.println(num+") ParentNode: "+a.getNode().getParent().toShortString());
 
             if(a.toString().startsWith("INS")){
                 checkInserts(a);
@@ -57,7 +57,7 @@ public class ActionITreeAnalyze {
         }
     }
     private void checkInserts(Action a){
-        System.out.println("______________________________INS Start__________________________________");
+//        System.out.println("______________________________INS Start__________________________________");
         //Changes in Packages are not important
         if(excludePackages(a)){
             //if true it is a method
@@ -76,10 +76,10 @@ public class ActionITreeAnalyze {
                 }
             }
         }
-        System.out.println("______________________________INS End__________________________________");
+//        System.out.println("______________________________INS End__________________________________");
     }
     private void checkMoves(Action a){
-        System.out.println("______________________________MOV Start__________________________________");
+//        System.out.println("______________________________MOV Start__________________________________");
         if(excludePackages(a)){
             ITree nodeForSearchInTree = null;
             if(checkForMethod(a)){
@@ -109,10 +109,10 @@ public class ActionITreeAnalyze {
                 }
             }
         }
-        System.out.println("______________________________MOV End__________________________________");
+//        System.out.println("______________________________MOV End__________________________________");
     }
     private void checkDeletes(Action a){
-        System.out.println("______________________________DEL Start__________________________________");
+//        System.out.println("______________________________DEL Start__________________________________");
         if(excludePackages(a)){
             if(checkForMethod(a)){
                 System.out.println("Method "+a.getNode().toShortString()+" has been deleted.");
@@ -130,10 +130,10 @@ public class ActionITreeAnalyze {
                 }
             }
         }
-        System.out.println("______________________________DEL End__________________________________");
+//        System.out.println("______________________________DEL End__________________________________");
     }
     private void checkUpdates(Action a){
-        System.out.println("______________________________UPD Start__________________________________");
+//        System.out.println("______________________________UPD Start__________________________________");
         if(excludePackages(a)){
             ITree mappingNode = null;
             if(checkForMethod(a)){
@@ -157,7 +157,7 @@ public class ActionITreeAnalyze {
                 }
             }
         }
-        System.out.println("______________________________UPD End__________________________________");
+//        System.out.println("______________________________UPD End__________________________________");
     }
     public void printCheckForTestList(){
         if(!this.checkForTestList.isEmpty()){

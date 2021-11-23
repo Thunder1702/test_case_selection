@@ -23,8 +23,8 @@ public class Main {
 //        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
 //        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
 
-        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_1_apache-commons-collection\\1_\\commons-collections_old";
-        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_1_apache-commons-collection\\1_\\commons-collections_new";
+        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\1_\\commons-lang_old";
+        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\1_\\commons-lang_new";
 
         MavenLauncherCtModelsBuild ctModelsBuild = new MavenLauncherCtModelsBuild(projectOldPath,projectNewPath);
         ctModelsBuild.buildModels();
@@ -36,11 +36,11 @@ public class Main {
 //        callModel.outputModelInformation(modelNew,"modelNew");
 //        callModel.outputModelInformation(modelOld,"modelOld");
 
-//        CallGraphResult callGraphResult = callModel.analyze();
-//        System.out.println("\n_______________________________Result after building Call Graph___________________________________");
-//        callGraphResult.printNodes();
-//        callGraphResult.printInvocations();
-//        System.out.println("__________________________________Call Graph build finished__________________________________________");
+        CallGraphResult callGraphResult = callModel.analyze();
+        System.out.println("\n_______________________________Result after building Call Graph___________________________________");
+        callGraphResult.printNodes();
+        callGraphResult.printInvocations();
+        System.out.println("__________________________________Call Graph build finished__________________________________________");
 
         final MappingStore mappingsComp = new MappingStore();
         final Matcher matcher = new CompositeMatchers.ClassicGumtree(iTreeBuilder.getRootSpoonLeft(),iTreeBuilder.getRootSpoonRight(), mappingsComp);
@@ -49,7 +49,7 @@ public class Main {
         final ActionGenerator actionGenerator = new ActionGenerator(iTreeBuilder.getRootSpoonLeft(), iTreeBuilder.getRootSpoonRight(), matcher.getMappings());
         List<Action> actions = actionGenerator.generate();
 
-        actions.forEach(System.out::println);
+//        actions.forEach(System.out::println);
         System.out.println("______________________________________________________________");
 
         ActionITreeAnalyze actionITreeAnalyze  = new ActionITreeAnalyze(iTreeBuilder.getRootSpoonRight(),iTreeBuilder.getRootSpoonLeft(), actions, matcher);
@@ -57,11 +57,11 @@ public class Main {
         actionITreeAnalyze.printCheckForTestList();
         Set<ITree> testCheckList = actionITreeAnalyze.getCheckForTestList();
 
-//        GraphMethodSearcher graphMethodSearcher = new GraphMethodSearcher(testCheckList,callGraphResult);
-//        List<ResultTuple> resultTupleList = graphMethodSearcher.searchInCallGraph();
-//        System.out.println("To run again:");
-//        for(ResultTuple r: resultTupleList){
-//            System.out.println("Test Method "+r.getMethodName()+" in Class "+r.getClassName());
-//        }
+        GraphMethodSearcher graphMethodSearcher = new GraphMethodSearcher(testCheckList,callGraphResult);
+        List<ResultTuple> resultTupleList = graphMethodSearcher.searchInCallGraph();
+        System.out.println("To run again:");
+        for(ResultTuple r: resultTupleList){
+            System.out.println("Test Method "+r.getMethodName()+" in Class "+r.getClassName());
+        }
     }
 }

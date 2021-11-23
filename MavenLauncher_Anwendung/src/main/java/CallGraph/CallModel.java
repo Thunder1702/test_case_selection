@@ -59,16 +59,17 @@ public class CallModel {
     public CallGraphResult analyze(){
         System.out.println("Building Call Graph starts...\n");
         //getAllTypes() --> nur die Top-Level Klassen oder alle?
+//        this.ctModelCompleteWithTestAST.filterChildren(new TypeFilter<>(CtType.class)).list();
         for(CtType completeClazz: this.ctModelCompleteWithTestAST.getAllTypes()){
             if(filterTests(completeClazz)){
                 //getSimpleName() --> only class Name without Packages.
-                System.out.println("____________Analyze TestClazz: "+completeClazz.getSimpleName()+"____________");
+//                System.out.println("____________Analyze TestClazz: "+completeClazz.getSimpleName()+"____________");
                 CallNode root = new CallNode(completeClazz.getSimpleName(),null,findITreeElement(this.iTreeOfModel,completeClazz.getSimpleName(),true,""));
                 this.rootNodes.add(root);
                 this.callNodes.add(root);
-                System.out.println("1) Create root Node: "+root.getClassName());
+//                System.out.println("1) Create root Node: "+root.getClassName());
                 searchForInvocation(completeClazz,root);
-                System.out.println("______________Finish Analyze TestClazz: "+completeClazz.getSimpleName()+"__________\n");
+//                System.out.println("______________Finish Analyze TestClazz: "+completeClazz.getSimpleName()+"__________\n");
             }
         }
         return leftNodesToTraverse();
@@ -97,6 +98,7 @@ public class CallModel {
      * if main class --> return false
      */
     private boolean filterTests(CtType c){
+//        this.ctModelOnlyMainAST.filterChildren(new TypeFilter<>(CtType.class)).list();
         for(CtType clazz: this.ctModelOnlyMainAST.getAllTypes()){
             if(c.getSimpleName().equals(clazz.getSimpleName())){
                 return  false;
@@ -113,7 +115,7 @@ public class CallModel {
         if(isClass){
             for(ITree t: iTree.breadthFirst()){
                 if(checkTypeClass(t.getType())&& checkLabel(searchName,t.getLabel())){
-                    System.out.println("ITree Element of "+searchName+": "+t.toShortString());
+//                    System.out.println("ITree Element of "+searchName+": "+t.toShortString());
                     return t;
                 }
             }
@@ -122,12 +124,12 @@ public class CallModel {
         else {
             for(ITree t:iTree.breadthFirst()){
                 if(checkTypeMethod(t.getType()) &&checkLabel(searchName,t.getLabel()) &&checkTypeClass(t.getParent().getType())&&checkLabel(parentNameClassIfMethod,t.getParent().getLabel())){
-                    System.out.println("ITree Element of "+searchName+ ": "+t.toShortString());
-                    System.out.println("ITree Element Parent of "+searchName+": "+t.getParent().toShortString());
+//                    System.out.println("ITree Element of "+searchName+ ": "+t.toShortString());
+//                    System.out.println("ITree Element Parent of "+searchName+": "+t.getParent().toShortString());
                     return t;
                 }else if(checkTypeConstructor(t.getType())&&checkLabel(searchName,t.getLabel())&&checkTypeClass(t.getParent().getType())&&checkLabel(parentNameClassIfMethod,t.getParent().getLabel())){
-                    System.out.println("ITree Element of "+searchName+": "+t.toShortString());
-                    System.out.println("ITree Element Parent of "+searchName+": "+t.getParent().toShortString());
+//                    System.out.println("ITree Element of "+searchName+": "+t.toShortString());
+//                    System.out.println("ITree Element Parent of "+searchName+": "+t.getParent().toShortString());
                     return t;
                 }
             }
@@ -158,11 +160,11 @@ public class CallModel {
     private boolean checkTypeConstructor(int type){ return  type==types.getTypeConstructor();}
 
     private void searchForInvocation(CtType clazz, CallNode currNode){
-        System.out.println("2) Search for Invocation in class: "+clazz.getSimpleName()+"; currNode: "+currNode.getClassName());
+//        System.out.println("2) Search for Invocation in class: "+clazz.getSimpleName()+"; currNode: "+currNode.getClassName());
         Set<CtMethod> methods = clazz.getMethods();
-        System.out.println("Methods found in clazz: "+clazz.getSimpleName());
+//        System.out.println("Methods found in clazz: "+clazz.getSimpleName());
         for(CtMethod m: methods){
-            System.out.println("Method: "+m.getSimpleName());
+//            System.out.println("Method: "+m.getSimpleName());
             List<CtAbstractInvocation> methodCalls = m.getElements(new TypeFilter<>(CtAbstractInvocation.class));
             List<CtConstructorCall> constructorCalls = m.filterChildren(new TypeFilter<>(CtConstructorCall.class)).list();
             // Is Empty if there are no Invocations in this method
@@ -172,28 +174,28 @@ public class CallModel {
                 for(CtAbstractInvocation i: methodCalls){
                     //create Invocation Method --> return Invocation
                     if(checkDeclaringType(i)){
-                        System.out.println("Invocation found in method: "+m.getSimpleName());
-                        System.out.println("Invocation DeclaringType: "+getMethodDeclaringType(i));
-                        System.out.println("Invocation MethodSignature: "+getMethodSignature(i));
+//                        System.out.println("Invocation found in method: "+m.getSimpleName());
+//                        System.out.println("Invocation DeclaringType: "+getMethodDeclaringType(i));
+//                        System.out.println("Invocation MethodSignature: "+getMethodSignature(i));
                         createAndAddInvocation(i,currNode, m.getSimpleName());
-                        System.out.println("\n");
+//                        System.out.println("\n");
                     }
                 }
                 for(CtConstructorCall c:constructorCalls){
-                    System.out.println("Constructor: "+c.getExecutable().getSimpleName());
+//                    System.out.println("Constructor: "+c.getExecutable().getSimpleName());
                 }
             }
         }
     }
     private boolean checkDeclaringType(CtAbstractInvocation i){
         CtTypeReference fromType = i.getExecutable().getDeclaringType();
-        System.out.println("Qualified name: "+fromType.getQualifiedName());
+//        System.out.println("Qualified name: "+fromType.getQualifiedName());
         return !isPartOfJDK(fromType.getQualifiedName());
 
     }
     private void createAndAddInvocation(CtAbstractInvocation i, CallNode currNode, String parentMethodSignature){
-        System.out.println("\n3) Create Invocation of method "+getMethodSignature(i));
-        System.out.println("currNode: "+currNode.getClassName());
+//        System.out.println("\n3) Create Invocation of method "+getMethodSignature(i));
+//        System.out.println("currNode: "+currNode.getClassName());
 
         Invocation invocation = new Invocation(getMethodSignature(i),getMethodDeclaringType(i),currNode,findITreeElement(this.iTreeOfModel,getMethodSignature(i),false, getMethodDeclaringType(i)), parentMethodSignature);
         invocation.setNextNode(createNextNode(getMethodDeclaringType(i),currNode));
@@ -201,9 +203,9 @@ public class CallModel {
         currNode.addInvocation(invocation);
     }
     private CallNode createNextNode(String declaringType, CallNode currNode){
-        System.out.println("\n4) Create nextNode...");
+//        System.out.println("\n4) Create nextNode...");
         CallNode nextNode = new CallNode(declaringType,currNode,findITreeElement(this.iTreeOfModel,declaringType,true,""));
-        System.out.println("nextNode: "+nextNode.getClassName()+" previous of nextNode: "+ nextNode.getPrevious().getClassName());
+//        System.out.println("nextNode: "+nextNode.getClassName()+" previous of nextNode: "+ nextNode.getPrevious().getClassName());
         if(!checkForDuplicateNodeInList(nextNode)){
             this.nodesToTraverse.add(nextNode);
         }
@@ -213,7 +215,7 @@ public class CallModel {
         return nextNode;
     }
     private boolean checkForDuplicateNodeInList(CallNode node){
-        System.out.println("5) Check for duplicate Node in List(nodesToTraverse)");
+//        System.out.println("5) Check for duplicate Node in List(nodesToTraverse)");
         for(CallNode clazz: this.nodesToTraverse){
             //vielleicht nur className checken, wenn die Klasse schon vorkommt nicht nochmal durchgehen?
             if(checkClassName(clazz,node) && checkITreeElement(clazz,node) && checkPreviousNode(clazz,node)){
@@ -227,7 +229,7 @@ public class CallModel {
         return false;
     }
     private boolean checkForDuplicateNodeInOutputList(CallNode node){
-        System.out.println("6) Check for duplicate Node in OutputList");
+//        System.out.println("6) Check for duplicate Node in OutputList");
         for(CallNode n: this.callNodes){
             if(checkClassName(n,node) && checkITreeElement(n,node) && checkPreviousNode(n,node)){
                 return true;

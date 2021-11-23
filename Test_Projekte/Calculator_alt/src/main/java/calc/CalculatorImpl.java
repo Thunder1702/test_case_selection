@@ -1,4 +1,6 @@
-public class CalculatorImpl implements Calculator{
+package calc;
+
+public class CalculatorImpl implements Calculator {
     int never_used = 0;
 
     public CalculatorImpl(){
@@ -19,8 +21,9 @@ public class CalculatorImpl implements Calculator{
     }
     //multiplication of two numbers are lost
 
-    public void printMsg(String msg){
+    public String printMsg(String msg){
         //not useful comment
         System.out.println("The message was: "+msg);
+        return "The message was: "+msg;
     }
 }

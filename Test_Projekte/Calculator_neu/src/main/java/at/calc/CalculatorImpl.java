@@ -23,8 +23,9 @@ public class CalculatorImpl implements Calculator {
         return a*b;
     }
 
-    public void printMsg(String msg){
+    public String printMsg(String msg){
         System.out.println("The message was: "+msg);
+        return "The message was: "+msg;
     }
 
 }

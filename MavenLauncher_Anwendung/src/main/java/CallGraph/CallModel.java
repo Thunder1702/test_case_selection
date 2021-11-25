@@ -206,7 +206,7 @@ public class CallModel {
 //        System.out.println("\n4) Create nextNode...");
         CallNode nextNode = new CallNode(declaringType,currNode,findITreeElement(this.iTreeOfModel,declaringType,true,""));
 //        System.out.println("nextNode: "+nextNode.getClassName()+" previous of nextNode: "+ nextNode.getPrevious().getClassName());
-        if(!checkForDuplicateNodeInList(nextNode)){
+        if(!checkForDuplicateNodeInList(nextNode) && !checkInvocationToItself(declaringType,currNode)){
             this.nodesToTraverse.add(nextNode);
         }
         if(!checkForDuplicateNodeInOutputList(nextNode)){
@@ -234,6 +234,12 @@ public class CallModel {
             if(checkClassName(n,node) && checkITreeElement(n,node) && checkPreviousNode(n,node)){
                 return true;
             }
+        }
+        return false;
+    }
+    private boolean checkInvocationToItself(String declaringType, CallNode currNode){
+        if(declaringType.equals(currNode.getClassName())){
+            return true;
         }
         return false;
     }

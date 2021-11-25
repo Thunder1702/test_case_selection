@@ -23,23 +23,35 @@ public class GraphMethodSearcher {
     }
 
     public List<ResultTuple> searchInCallGraph(){
+        List<ResultTuple> resultList = new ArrayList<>();
         System.out.println("searching for Test-Methods to run again...");
         for(ITree iTree: this.checkForTest){
-            ResultTuple resultTuple = checkMethodSignature(iTree);
-            if(!checkForNull(resultTuple,iTree.getLabel())){
-                this.testMethodsToRunAgain.add(resultTuple);
+            resultList = checkMethodSignature(iTree);
+            if(resultList!=null){
+                for(ResultTuple tuple : resultList){
+                    if(!checkForNull(tuple,iTree.getLabel())){
+                        this.testMethodsToRunAgain.add(tuple);
+                    }
+                }
             }
         }
         removeNulls();
         return this.testMethodsToRunAgain;
     }
-    private ResultTuple checkMethodSignature(ITree iTree){
+    private List<ResultTuple> checkMethodSignature(ITree iTree){
+        List<ResultTuple> temp = new ArrayList<>();
         for(Invocation i: this.callGraphResult.getAllInvocations()){
-            if(checkTypeMethod(iTree.getType()) && i.getMethodSignature().equals(iTree.getLabel())){
-                return new ResultTuple(i.getParentNode().getClassName(),i.getParentMethodSignature());
+            if(checkTypeMethod(iTree.getType()) && i.getMethodSignature().equals(iTree.getLabel()) &&i.getDeclaringType().equals(iTree.getParent().getLabel())){
+                temp.add(new ResultTuple(i.getParentNode().getClassName(),i.getParentMethodSignature()));
+//                return new ResultTuple(i.getParentNode().getClassName(),i.getParentMethodSignature());
             }
         }
-        return null;
+        if(temp.isEmpty()){
+            return null;
+        }else {
+            return temp;
+        }
+
     }
     private boolean checkTypeMethod(int type){
         return type==this.iTreeTypes.getTypeMethod();

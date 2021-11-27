@@ -98,11 +98,8 @@ public class CallModel {
      * if main class --> return false
      */
     private boolean filterTests(CtType c){
-//        this.ctModelOnlyMainAST.filterChildren(new TypeFilter<>(CtType.class)).list();
-        for(CtType clazz: this.ctModelOnlyMainAST.getAllTypes()){
-            if(c.getSimpleName().equals(clazz.getSimpleName())){
-                return  false;
-            }
+        for(Object clazz: this.ctModelOnlyMainAST.filterChildren(new NamedElementFilter<>(CtType.class,c.getSimpleName())).list()){
+            return false;
         }
         return true;
 

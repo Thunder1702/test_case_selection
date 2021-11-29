@@ -14,19 +14,20 @@ import com.github.gumtreediff.tree.ITree;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) {
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
 
 //        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc";
 //        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\EasyCalc_NEU";
 
-//        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
-//        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
+        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
+        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
 
-        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\1_\\commons-lang_old";
-        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\1_\\commons-lang_new";
+//        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\1_\\commons-lang_old";
+//        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\1_\\commons-lang_new";
 
         MavenLauncherCtModelsBuild ctModelsBuild = new MavenLauncherCtModelsBuild(projectOldPath,projectNewPath);
         ctModelsBuild.buildModels();
@@ -65,8 +66,8 @@ public class Main {
         for(ResultTuple r: resultTupleList){
             System.out.println("Test Method "+r.getMethodName()+" in Class "+r.getClassName());
         }
-        long endTime = System.nanoTime();
+        long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime;
-        System.out.println("Time: "+totalTime);
+        System.out.println("Time: "+totalTime+" ms");
     }
 }

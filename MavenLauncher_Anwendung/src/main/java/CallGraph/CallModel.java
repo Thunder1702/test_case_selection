@@ -58,8 +58,9 @@ public class CallModel {
      */
     public CallGraphResult analyze(){
         System.out.println("Building Call Graph starts...\n");
-        //getAllTypes() --> nur die Top-Level Klassen oder alle?
 //        this.ctModelCompleteWithTestAST.filterChildren(new TypeFilter<>(CtType.class)).list();
+        System.out.println("Num of classes: "+this.ctModelCompleteWithTestAST.getAllTypes().size());
+        System.out.println("Num of testclasses: "+(this.ctModelCompleteWithTestAST.getAllTypes().size() - this.ctModelOnlyMainAST.getAllTypes().size()));
         for(CtType completeClazz: this.ctModelCompleteWithTestAST.getAllTypes()){
             if(filterTests(completeClazz)){
                 //getSimpleName() --> only class Name without Packages.
@@ -81,6 +82,7 @@ public class CallModel {
             CallNode nodeToTraverse = this.nodesToTraverse.get(0);
             String nameClass = nodeToTraverse.getClassName();
             this.nodesToTraverse.remove(nodeToTraverse);
+//            System.out.println("Nodes to Traverse again NameFilter: "+this.ctModelCompleteWithTestAST.filterChildren(new NamedElementFilter<>(CtType.class,nameClass)).list().size());
             for(Object type: this.ctModelCompleteWithTestAST.filterChildren(new NamedElementFilter<>(CtType.class,nameClass)).list()){
                 CtType clazz = (CtType) type;
                 if(nodeToTraverse.getClassName().equals(clazz.getSimpleName())){

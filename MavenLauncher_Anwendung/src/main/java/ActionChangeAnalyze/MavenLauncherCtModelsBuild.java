@@ -4,8 +4,8 @@ import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
 
 public class MavenLauncherCtModelsBuild {
-    private String projectOldPath;
-    private String projectNewPath;
+    private final String projectOldPath;
+    private final String projectNewPath;
     private CtModel modelOld;
     private CtModel modelNew;
     private CtModel modelNewTest;

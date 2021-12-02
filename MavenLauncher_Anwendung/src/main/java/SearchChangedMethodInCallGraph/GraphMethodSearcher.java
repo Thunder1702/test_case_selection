@@ -4,6 +4,7 @@ import ActionChangeAnalyze.ITreeTypes;
 import CallGraph.CallGraphResult;
 import CallGraph.Invocation;
 import com.github.gumtreediff.tree.ITree;
+import spoon.reflect.declaration.CtMethod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +44,14 @@ public class GraphMethodSearcher {
     private List<ResultTuple> checkMethodSignature(ITree iTree){
         List<ResultTuple> temp = new ArrayList<>();
         for(Invocation i: this.callGraphResult.getAllInvocations()){
-            if(checkTypeMethod(iTree.getType()) && i.getMethodSignature().equals(iTree.getLabel()) &&i.getDeclaringType().equals(iTree.getParent().getLabel())){
+            if(checkTypeMethod(iTree.getType()) && i.getMethodSignature().equals(iTree.getLabel()) &&i.getDeclaringType().equals(iTree.getParent().getLabel()) && checkIfTestMethod(i.getParentMethodSignature())){
                 temp.add(new ResultTuple(i.getParentNode().getClassName(),i.getParentMethodSignature()));
 //                return new ResultTuple(i.getParentNode().getClassName(),i.getParentMethodSignature());
-                System.out.println("ITree (Methode): "+iTree.toShortString());
-                System.out.println("ITree Parent (Klasse): "+iTree.getParent().toShortString());
-                System.out.println("ITree Parent Parent (Package): "+iTree.getParent().getParent().toShortString());
-                System.out.println("ITree PPP (Package? oder test/main): "+iTree.getParent().getParent().getParent().toShortString());
-                System.out.println("ITree PPPP (test/main?): "+iTree.getParent().getParent().getParent().getParent().toShortString());
+//                System.out.println("ITree (Methode): "+iTree.toShortString());
+//                System.out.println("ITree Parent (Klasse): "+iTree.getParent().toShortString());
+//                System.out.println("ITree Parent Parent (Package): "+iTree.getParent().getParent().toShortString());
+//                System.out.println("ITree PPP (Package? oder test/main): "+iTree.getParent().getParent().getParent().toShortString());
+//                System.out.println("ITree PPPP (test/main?): "+iTree.getParent().getParent().getParent().getParent().toShortString());
 
             }
         }
@@ -73,5 +74,14 @@ public class GraphMethodSearcher {
     }
     private void removeNulls(){
         this.testMethodsToRunAgain.remove(null);
+    }
+    private boolean checkIfTestMethod(String methodName){
+        for(Object o: this.testMethods){
+            CtMethod method = (CtMethod) o;
+            if(method.getSimpleName().equals(methodName)){
+                return true;
+            }
+        }
+        return false;
     }
 }

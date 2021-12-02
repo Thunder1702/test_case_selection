@@ -46,7 +46,7 @@ public class MavenLauncherCtModelsBuild {
         //Create AST of Project New (ONLY Test)
         onlytest.getEnvironment().setNoClasspath(true);
         onlytest.buildModel();
-        this.onlyTest = onlyTest;
+        this.onlyTest = onlytest.getModel();
         generateTestMethodList();
     }
 

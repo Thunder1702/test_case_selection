@@ -192,6 +192,11 @@ public class CallModel {
         return !isPartOfJDK(fromType.getQualifiedName());
 
     }
+    /*
+     * CtAbstractInvocation i = Method which causes the Invocation
+     * CallNode currNode = current Node in CallGraph
+     * String parentMethodSignature = Name of Method in which CtAbstractInvocation i is used(called)
+     */
     private void createAndAddInvocation(CtAbstractInvocation i, CallNode currNode, String parentMethodSignature){
 //        System.out.println("\n3) Create Invocation of method "+getMethodSignature(i));
 //        System.out.println("currNode: "+currNode.getClassName());
@@ -205,7 +210,7 @@ public class CallModel {
 //        System.out.println("\n4) Create nextNode...");
         CallNode nextNode = new CallNode(declaringType,currNode,findITreeElement(this.iTreeOfModel,declaringType,true,""));
 //        System.out.println("nextNode: "+nextNode.getClassName()+" previous of nextNode: "+ nextNode.getPrevious().getClassName());
-        if(!checkForDuplicateNodeInList(nextNode) && !checkInvocationToItself(declaringType,currNode)){
+        if(!checkForDuplicateNodeInList(nextNode) && !checkInvocationToItself(declaringType,currNode) && !checkForDuplicateNodeInOutputList(nextNode)){
             this.nodesToTraverse.add(nextNode);
         }
         if(!checkForDuplicateNodeInOutputList(nextNode)){

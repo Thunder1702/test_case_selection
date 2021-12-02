@@ -14,12 +14,14 @@ public class GraphMethodSearcher {
     private final CallGraphResult callGraphResult;
     private final ITreeTypes iTreeTypes;
     private List<ResultTuple> testMethodsToRunAgain;
+    private final ArrayList testMethods;
 
-    public GraphMethodSearcher(Set<ITree> checkForTest, CallGraphResult callGraphResult){
+    public GraphMethodSearcher(Set<ITree> checkForTest, CallGraphResult callGraphResult, ArrayList testMethods){
         this.checkForTest = checkForTest;
         this.callGraphResult = callGraphResult;
         this.iTreeTypes = new ITreeTypes();
         this.testMethodsToRunAgain = new ArrayList<>();
+        this.testMethods = testMethods;
     }
 
     public List<ResultTuple> searchInCallGraph(){

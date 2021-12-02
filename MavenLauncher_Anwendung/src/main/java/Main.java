@@ -26,8 +26,8 @@ public class Main {
         String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
         String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
 
-//        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\1_\\commons-lang_old";
-//        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\1_\\commons-lang_new";
+//        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\3_\\commons-lang_old";
+//        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\3_\\commons-lang_new";
 
         MavenLauncherCtModelsBuild ctModelsBuild = new MavenLauncherCtModelsBuild(projectOldPath,projectNewPath);
         ctModelsBuild.buildModels();
@@ -54,20 +54,25 @@ public class Main {
 
 //        actions.forEach(System.out::println);
         System.out.println("______________________________________________________________");
+        System.out.println(actions.size());
 
         ActionITreeAnalyze actionITreeAnalyze  = new ActionITreeAnalyze(iTreeBuilder.getRootSpoonRight(),iTreeBuilder.getRootSpoonLeft(), actions, matcher);
         actionITreeAnalyze.analyzeActions();
         actionITreeAnalyze.printCheckForTestList();
         Set<ITree> testCheckList = actionITreeAnalyze.getCheckForTestList();
+        System.out.println(testCheckList.size());
 
-        GraphMethodSearcher graphMethodSearcher = new GraphMethodSearcher(testCheckList,callGraphResult);
+        GraphMethodSearcher graphMethodSearcher = new GraphMethodSearcher(testCheckList,callGraphResult,ctModelsBuild.getOnlyTestMethods());
         List<ResultTuple> resultTupleList = graphMethodSearcher.searchInCallGraph();
         System.out.println("To run again:");
         for(ResultTuple r: resultTupleList){
             System.out.println("Test Method "+r.getMethodName()+" in Class "+r.getClassName());
         }
+        System.out.println(resultTupleList.size());
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime;
-        System.out.println("Time: "+totalTime+" ms");
+        long time = TimeUnit.MILLISECONDS.toSeconds(totalTime);
+        System.out.println("Time[ms]: "+totalTime);
+        System.out.println("Time[s]: "+time);
     }
 }

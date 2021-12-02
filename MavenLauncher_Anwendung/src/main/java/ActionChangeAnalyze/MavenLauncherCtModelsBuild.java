@@ -9,6 +9,7 @@ public class MavenLauncherCtModelsBuild {
     private CtModel modelOld;
     private CtModel modelNew;
     private CtModel modelNewTest;
+    private CtModel onlyTest;
 
     public MavenLauncherCtModelsBuild(String projectOldPath, String projectNewPath){
         this.projectNewPath = projectNewPath;
@@ -19,6 +20,7 @@ public class MavenLauncherCtModelsBuild {
         MavenLauncher launcherOld = new MavenLauncher(projectOldPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
         MavenLauncher launcherNew = new MavenLauncher(projectNewPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
         MavenLauncher launcherNewTest =new MavenLauncher(projectNewPath,MavenLauncher.SOURCE_TYPE.ALL_SOURCE);
+        MavenLauncher onlytest = new MavenLauncher(projectNewPath,MavenLauncher.SOURCE_TYPE.TEST_SOURCE);
 
         //Ignore dependencies
         //launcher.getEnvironment().setNoClasspath(true);
@@ -35,6 +37,10 @@ public class MavenLauncherCtModelsBuild {
         launcherNewTest.getEnvironment().setNoClasspath(true);
         launcherNewTest.buildModel();
         this.modelNewTest = launcherNewTest.getModel();
+        //Create AST of Project New (ONLY Test)
+        onlytest.getEnvironment().setNoClasspath(true);
+        onlytest.buildModel();
+        this.onlyTest = onlyTest;
     }
 
     public CtModel getModelOld(){
@@ -45,5 +51,9 @@ public class MavenLauncherCtModelsBuild {
     }
     public  CtModel getModelNewTest(){
         return modelNewTest;
+    }
+
+    public CtModel getModelOnlyTest() {
+        return onlyTest;
     }
 }

@@ -2,6 +2,10 @@ package ActionChangeAnalyze;
 
 import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
+import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtType;
+
+import java.util.ArrayList;
 
 public class MavenLauncherCtModelsBuild {
     private final String projectOldPath;
@@ -10,10 +14,12 @@ public class MavenLauncherCtModelsBuild {
     private CtModel modelNew;
     private CtModel modelNewTest;
     private CtModel onlyTest;
+    private ArrayList onlyTestMethods;
 
     public MavenLauncherCtModelsBuild(String projectOldPath, String projectNewPath){
         this.projectNewPath = projectNewPath;
         this.projectOldPath = projectOldPath;
+        this.onlyTestMethods = new ArrayList();
     }
 
     public void buildModels(){
@@ -41,6 +47,7 @@ public class MavenLauncherCtModelsBuild {
         onlytest.getEnvironment().setNoClasspath(true);
         onlytest.buildModel();
         this.onlyTest = onlyTest;
+        generateTestMethodList();
     }
 
     public CtModel getModelOld(){
@@ -52,8 +59,18 @@ public class MavenLauncherCtModelsBuild {
     public  CtModel getModelNewTest(){
         return modelNewTest;
     }
-
     public CtModel getModelOnlyTest() {
         return onlyTest;
+    }
+    public void generateTestMethodList(){
+        for(CtType clazz: this.onlyTest.getAllTypes()){
+            for(Object o: clazz.getMethods()){
+                CtMethod method = (CtMethod) o;
+                this.onlyTestMethods.add(method);
+            }
+        }
+    }
+    public ArrayList getOnlyTestMethods() {
+        return onlyTestMethods;
     }
 }

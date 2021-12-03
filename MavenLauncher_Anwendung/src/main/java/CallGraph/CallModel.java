@@ -110,6 +110,7 @@ public class CallModel {
      * Maybe split into findITreeElementClass and findITreeElementMethod and findITreeElementConstructor?
      */
     private ITree findITreeElement(ITree iTree,String searchName, boolean isClass, String parentNameClassIfMethod){
+        System.out.println("searchName: "+searchName+"\n isClass: "+isClass+"\n parentNameClassIfMethod: "+parentNameClassIfMethod);
         //searching ITree element for a class
         if(isClass){
             for(ITree t: iTree.breadthFirst()){
@@ -188,7 +189,7 @@ public class CallModel {
     }
     private boolean checkDeclaringType(CtAbstractInvocation i){
         CtTypeReference fromType = i.getExecutable().getDeclaringType();
-//        System.out.println("Qualified name: "+fromType.getQualifiedName());
+        System.out.println("Qualified name: "+fromType.getQualifiedName());
         return !isPartOfJDK(fromType.getQualifiedName());
 
     }

@@ -33,7 +33,7 @@ public class GraphMethodSearcher {
             resultList = checkMethodSignature(iTree);
             if(resultList!=null){
                 for(ResultTuple tuple : resultList){
-                    if(!checkForNull(tuple,iTree.getLabel())){
+                    if(!checkForNull(tuple,iTree.getLabel()) && !checkForDuplicateTuple(tuple)){
                         this.testMethodsToRunAgain.add(tuple);
                     }
                 }
@@ -56,6 +56,14 @@ public class GraphMethodSearcher {
             return temp;
         }
 
+    }
+    private boolean checkForDuplicateTuple(ResultTuple tuple){
+        for(ResultTuple resultTuple: this.testMethodsToRunAgain){
+            if(resultTuple.getMethodName().equals(tuple.getMethodName()) && resultTuple.getClassName().equals(tuple.getClassName())){
+                return true;
+            }
+        }
+        return false;
     }
     private boolean checkTypeMethod(int type){
         return type==this.iTreeTypes.getTypeMethod();

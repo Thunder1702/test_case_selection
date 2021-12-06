@@ -47,12 +47,6 @@ public class GraphMethodSearcher {
             if(checkTypeMethod(iTree.getType()) && i.getMethodSignature().equals(iTree.getLabel()) &&i.getDeclaringType().equals(iTree.getParent().getLabel()) && checkIfTestMethod(i.getParentMethodSignature())){
                 temp.add(new ResultTuple(i.getParentNode().getClassName(),i.getParentMethodSignature()));
 //                return new ResultTuple(i.getParentNode().getClassName(),i.getParentMethodSignature());
-//                System.out.println("ITree (Methode): "+iTree.toShortString());
-//                System.out.println("ITree Parent (Klasse): "+iTree.getParent().toShortString());
-//                System.out.println("ITree Parent Parent (Package): "+iTree.getParent().getParent().toShortString());
-//                System.out.println("ITree PPP (Package? oder test/main): "+iTree.getParent().getParent().getParent().toShortString());
-//                System.out.println("ITree PPPP (test/main?): "+iTree.getParent().getParent().getParent().getParent().toShortString());
-
             }
         }
         if(temp.isEmpty()){

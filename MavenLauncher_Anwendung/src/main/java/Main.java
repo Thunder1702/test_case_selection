@@ -26,8 +26,8 @@ public class Main {
 //        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
 //        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
 
-        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_5_vertigo-io-vertigo\\1_\\vertigo_old";
-        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_5_vertigo-io-vertigo\\1_\\vertigo_new";
+        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\1_\\commons-lang_old";
+        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\1_\\commons-lang_new";
 
         MavenLauncherCtModelsBuild ctModelsBuild = new MavenLauncherCtModelsBuild(projectOldPath,projectNewPath);
         ctModelsBuild.buildModels();
@@ -63,7 +63,7 @@ public class Main {
         System.out.println(testCheckList.size());
 
         GraphMethodSearcher graphMethodSearcher = new GraphMethodSearcher(testCheckList,callGraphResult,ctModelsBuild.getOnlyTestMethods());
-        List<ResultTuple> resultTupleList = graphMethodSearcher.searchInCallGraph();
+        Set<ResultTuple> resultTupleList = graphMethodSearcher.searchInCallGraph();
         System.out.println("To run again:");
         for(ResultTuple r: resultTupleList){
             System.out.println("Test Method "+r.getMethodName()+" in Class "+r.getClassName());

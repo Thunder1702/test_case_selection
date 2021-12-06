@@ -7,6 +7,7 @@ import com.github.gumtreediff.tree.ITree;
 import spoon.reflect.declaration.CtMethod;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,18 +15,18 @@ public class GraphMethodSearcher {
     private final Set<ITree> checkForTest;
     private final CallGraphResult callGraphResult;
     private final ITreeTypes iTreeTypes;
-    private List<ResultTuple> testMethodsToRunAgain;
+    private Set<ResultTuple> testMethodsToRunAgain;
     private final ArrayList testMethods;
 
     public GraphMethodSearcher(Set<ITree> checkForTest, CallGraphResult callGraphResult, ArrayList testMethods){
         this.checkForTest = checkForTest;
         this.callGraphResult = callGraphResult;
         this.iTreeTypes = new ITreeTypes();
-        this.testMethodsToRunAgain = new ArrayList<>();
+        this.testMethodsToRunAgain = new HashSet<>();
         this.testMethods = testMethods;
     }
 
-    public List<ResultTuple> searchInCallGraph(){
+    public Set<ResultTuple> searchInCallGraph(){
         List<ResultTuple> resultList = new ArrayList<>();
         System.out.println("searching for Test-Methods to run again...");
         for(ITree iTree: this.checkForTest){

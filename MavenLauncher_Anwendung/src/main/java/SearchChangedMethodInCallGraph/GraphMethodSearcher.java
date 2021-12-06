@@ -16,9 +16,9 @@ public class GraphMethodSearcher {
     private final CallGraphResult callGraphResult;
     private final ITreeTypes iTreeTypes;
     private Set<ResultTuple> testMethodsToRunAgain;
-    private final ArrayList testMethods;
+    private final ArrayList<CtMethod> testMethods;
 
-    public GraphMethodSearcher(Set<ITree> checkForTest, CallGraphResult callGraphResult, ArrayList testMethods){
+    public GraphMethodSearcher(Set<ITree> checkForTest, CallGraphResult callGraphResult, ArrayList<CtMethod> testMethods){
         this.checkForTest = checkForTest;
         this.callGraphResult = callGraphResult;
         this.iTreeTypes = new ITreeTypes();
@@ -27,7 +27,7 @@ public class GraphMethodSearcher {
     }
 
     public Set<ResultTuple> searchInCallGraph(){
-        List<ResultTuple> resultList = new ArrayList<>();
+        List<ResultTuple> resultList;
         System.out.println("searching for Test-Methods to run again...");
         for(ITree iTree: this.checkForTest){
             resultList = checkMethodSignature(iTree);

@@ -175,13 +175,12 @@ public class CallModel {
                 //for every method call and constructor call --> add Invocation to invocationList of currNode
 //                System.out.println(methodCalls.size());
                 for(CtAbstractInvocation i: methodCalls){
+//                    System.out.println(i.toString());
+//                    System.out.println(i.getExecutable().getDeclaringType());
+
                     //create Invocation Method --> return Invocation
                     if(checkDeclaringType(i)){
-//                        System.out.println("Invocation found in method: "+m.getSimpleName());
-//                        System.out.println("Invocation DeclaringType: "+getMethodDeclaringType(i));
-//                        System.out.println("Invocation MethodSignature: "+getMethodSignature(i));
                         createAndAddInvocation(i,currNode, m.getSimpleName());
-//                        System.out.println("\n");
                     }
                 }
                 for(CtConstructorCall c:constructorCalls){
@@ -192,9 +191,11 @@ public class CallModel {
     }
     private boolean checkDeclaringType(CtAbstractInvocation i){
         CtTypeReference fromType = i.getExecutable().getDeclaringType();
-//        if(fromType==null){
+        if(fromType==null){
 //            System.out.println("fromType is null");
-//        }else{
+            return false;
+        }
+//        else{
 //            System.out.println("Qualified name: "+fromType.getQualifiedName());
 //        }
         return !isPartOfJDK(fromType.getQualifiedName()) && checkQualifiedName(fromType.getQualifiedName());
@@ -327,6 +328,11 @@ public class CallModel {
         return element.getExecutable().getSimpleName();
     }
     private String getMethodDeclaringType(CtAbstractInvocation invocation){
+//        System.out.println(invocation.getExecutable().getDeclaringType().getSimpleName());
+        if(invocation.getExecutable().getDeclaringType().getSimpleName().endsWith("<>")){
+            String s = invocation.getExecutable().getDeclaringType().getSimpleName().replace("<>","");
+            return s;
+        }
         return invocation.getExecutable().getDeclaringType().getSimpleName();
     }
 

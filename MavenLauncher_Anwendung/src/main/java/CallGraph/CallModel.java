@@ -29,6 +29,7 @@ public class CallModel {
     private List<CallNode> nodesToTraverse;
     private List<CallNode> callNodes;
     private List<Invocation> invocations;
+    private List<String> packagesName;
 
     public CallModel(CtModel ctModelMain,CtModel ctModelCompleteWithTest, ITree iTree){
         this.ctModelOnlyMainAST = ctModelMain;
@@ -39,6 +40,7 @@ public class CallModel {
         this.nodesToTraverse = new ArrayList<>();
         this.callNodes =new ArrayList<>();
         this.invocations = new ArrayList<>();
+        this.packagesName = new ArrayList<>();
     }
     /*
      * Every single test class from package "test" is a root in a CallTree.
@@ -61,6 +63,7 @@ public class CallModel {
 //        this.ctModelCompleteWithTestAST.filterChildren(new TypeFilter<>(CtType.class)).list();
         System.out.println("Num of classes: "+this.ctModelCompleteWithTestAST.getAllTypes().size());
         System.out.println("Num of testclasses: "+(this.ctModelCompleteWithTestAST.getAllTypes().size() - this.ctModelOnlyMainAST.getAllTypes().size()));
+        generatePackageList();
         for(CtType completeClazz: this.ctModelCompleteWithTestAST.getAllTypes()){
             if(filterTests(completeClazz)){
                 //getSimpleName() --> only class Name without Packages.
@@ -189,8 +192,12 @@ public class CallModel {
     }
     private boolean checkDeclaringType(CtAbstractInvocation i){
         CtTypeReference fromType = i.getExecutable().getDeclaringType();
-//        System.out.println("Qualified name: "+fromType.getQualifiedName());
-        return !isPartOfJDK(fromType.getQualifiedName());
+//        if(fromType==null){
+//            System.out.println("fromType is null");
+//        }else{
+//            System.out.println("Qualified name: "+fromType.getQualifiedName());
+//        }
+        return !isPartOfJDK(fromType.getQualifiedName()) && checkQualifiedName(fromType.getQualifiedName());
 
     }
     /*
@@ -272,6 +279,49 @@ public class CallModel {
                 || (qualifiedName.startsWith("org.w3c.dom."))) || (qualifiedName.startsWith("org.junit"))
                 || (qualifiedName.startsWith("junit.")) || (qualifiedName.startsWith("org.hamcrest"))
                 || (qualifiedName.startsWith("org.easymock"));
+    }
+    private boolean checkQualifiedName(String qualifiedName){
+        int maxDots = countMaxDots();
+        for(String packageName: this.packagesName){
+            if(qualifiedName.startsWith(packageName) && checkNumDots(maxDots,packageName)){
+                return true;
+            }
+        }
+        return false;
+    }
+    private void generatePackageList(){
+        for(CtPackage ctPackage: this.ctModelCompleteWithTestAST.getAllPackages()){
+            this.packagesName.add(ctPackage.getQualifiedName());
+        }
+    }
+    private int countMaxDots(){
+        int countDots = 0;
+        for(String packageName: this.packagesName){
+            if(packageName.contains(".")){
+                int num = getNumDotsInString(packageName);
+                if(num > countDots){
+                    countDots = num;
+                }
+            }
+        }
+        return countDots;
+    }
+    private boolean checkNumDots(int maxDots, String packageName){
+        int numDots = getNumDotsInString(packageName);
+        if(numDots > 2 && numDots <= maxDots - 1){
+            return true;
+        }else {
+            return false;
+        }
+    }
+    private int getNumDotsInString(String packageName){
+        int numDots = 0;
+        for(int i = 0; i<packageName.length();i++){
+            if(packageName.charAt(i)=='.'){
+                numDots++;
+            }
+        }
+        return numDots;
     }
     private String getMethodSignature(CtAbstractInvocation element){
         return element.getExecutable().getSimpleName();

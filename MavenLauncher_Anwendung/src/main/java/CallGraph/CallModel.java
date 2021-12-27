@@ -282,9 +282,11 @@ public class CallModel {
                 || (qualifiedName.startsWith("org.easymock"));
     }
     private boolean checkQualifiedName(String qualifiedName){
-        int maxDots = countMaxDots();
+        String packageNameGeneratedFromQualifiedName = generatePackageName(qualifiedName);
+//        int maxDots = countMaxDots();
         for(String packageName: this.packagesName){
-            if(qualifiedName.startsWith(packageName) && checkNumDots(maxDots,packageName)){
+            if(qualifiedName.startsWith(packageName)  && packageName.equals(packageNameGeneratedFromQualifiedName)){
+//                if(qualifiedName.startsWith(packageName) && checkNumDots(maxDots,packageName) && packageName.equals(packageNameGeneratedFromQualifiedName)){
                 return true;
             }
         }
@@ -295,6 +297,26 @@ public class CallModel {
             this.packagesName.add(ctPackage.getQualifiedName());
         }
     }
+    private String generatePackageName(String qualifiedName){
+        String s = qualifiedName;
+        String[] arr = s.split("\\.");
+//        System.out.println(arr.length);
+
+//        for(int i = 0; i<arr.length;i++){
+//            System.out.println(arr[i]);
+//        }
+        String snew = "";
+        for(int j = 0; j<arr.length - 1;j++){
+            if(j==arr.length - 2){
+                snew = snew + arr[j];
+            }else {
+                snew = snew + arr[j]+".";
+            }
+        }
+//        System.out.println(snew);
+        return snew;
+    }
+
     private int countMaxDots(){
         int countDots = 0;
         for(String packageName: this.packagesName){

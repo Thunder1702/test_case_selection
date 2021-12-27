@@ -198,7 +198,8 @@ public class ActionITreeAnalyze {
 //                System.out.println("_______________________________");
 //                return t;
 //            }
-            if(t.getType()==searchNode.getType() && t.getLabel().equals(searchNode.getLabel()) && t.getParent().getType()==searchNode.getParent().getType() && t.getParent().getLabel().equals(searchNode.getParent().getLabel())){
+//            if(t.getType()==searchNode.getType() && t.getLabel().equals(searchNode.getLabel()) && t.getParent().getType()==searchNode.getParent().getType() && t.getParent().getLabel().equals(searchNode.getParent().getLabel())){
+            if(checkChildren(t,searchNode) && checkParent(t,searchNode) && checkNodes(t,searchNode)){
 //                System.out.println("Found__________________________");
 //                System.out.println("Node Found in ITree from ModelNew: "+t.toShortString());
 //                System.out.println("_______________________________");
@@ -207,6 +208,37 @@ public class ActionITreeAnalyze {
         }
         return null;
     }
+    private boolean checkNodes(ITree t, ITree searchNode){
+        if(t.getType()==searchNode.getType() && t.getLabel().equals(searchNode.getLabel())){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkParent(ITree t, ITree searchNode){
+        if(t.getParent().getType()==searchNode.getParent().getType() && t.getParent().getLabel().equals(searchNode.getParent().getLabel())){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkChildren(ITree t, ITree searchNode){
+        int sizeT = t.getChildren().size();
+        if(t.getChildren().size()==searchNode.getChildren().size()){
+            for(ITree child:t.getChildren()){
+                for(ITree childSearchNode: searchNode.getChildren()){
+                    if(checkNodes(child,childSearchNode)){
+                        sizeT--;
+                    }
+                }
+            }
+            if(sizeT==0){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private ITree searchParentMethodOrClass(ITree node){
         if(checkForParentIsMethod(node.getParent())){
             return node.getParent();

@@ -24,8 +24,8 @@ public class Main {
 //        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_alt";
 //        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\___________Working__________\\test_case_selection\\Test_Projekte\\Calculator_neu";
 
-        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\3_\\commons-lang_old";
-        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_4_apache-commons-lang\\3_\\commons-lang_new";
+        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_1_apache-commons-collection\\1_\\commons-collections_old";
+        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_1_apache-commons-collection\\1_\\commons-collections_new";
 
 //        String projectOldPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_2_apache-commons-geometry\\1_\\commons-geometry_old";
 //        String projectNewPath = "D:\\Dokumente\\1_Studium_0-Bachelorarbeit\\Testing_functionalities_FINAL\\Project_2_apache-commons-geometry\\1_\\commons-geometry_new";
@@ -37,9 +37,9 @@ public class Main {
 
         CallModel callModel = new CallModel(ctModelsBuild.getModelNew(),ctModelsBuild.getModelNewTest(),iTreeBuilder.getCompleteModelNewITree());
         CallGraphResult callGraphResult = callModel.analyze();
-        System.out.println("\n_______________________________Result after building Call Graph___________________________________");
-        callGraphResult.printNodes();
-        callGraphResult.printInvocations();
+//        System.out.println("\n_______________________________Result after building Call Graph___________________________________");
+//        callGraphResult.printNodes();
+//        callGraphResult.printInvocations();
         System.out.println("__________________________________Call Graph build finished__________________________________________");
 
         final MappingStore mappingsComp = new MappingStore();

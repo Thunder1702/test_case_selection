@@ -94,7 +94,7 @@ public class CallModel {
             }
             leftNodesToTraverse();
         }
-        System.out.println("Finished building CallGraph...");
+//        System.out.println("Finished building CallGraph...");
         return new CallGraphResult(this.callNodes,this.invocations);
     }
     /*

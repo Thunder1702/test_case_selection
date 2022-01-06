@@ -28,7 +28,8 @@ public class GraphMethodSearcher {
 
     public Set<ResultTuple> searchInCallGraph(){
         List<ResultTuple> resultList;
-        System.out.println("searching for Test-Methods to run again...");
+        System.out.println("Searching for Test-Methods to run again...");
+        System.out.println("TestMethods in Project: "+ this.testMethods.size());
         for(ITree iTree: this.checkForTest){
             resultList = checkMethodSignature(iTree);
             if(resultList!=null){

@@ -18,9 +18,6 @@ import java.util.List;
 import java.util.Set;
 
 public class CallModel {
-    /*
-     * Maybe ctModel and iTreeOfModel = final???
-     */
     private final CtModel ctModelOnlyMainAST;
     private final CtModel ctModelCompleteWithTestAST;
     private final ITree iTreeOfModel;
@@ -59,8 +56,8 @@ public class CallModel {
      *
      */
     public CallGraphResult analyze(){
-        System.out.println("Building Call Graph starts...\n");
-//        this.ctModelCompleteWithTestAST.filterChildren(new TypeFilter<>(CtType.class)).list();
+        System.out.println("_______________________________________________________________________________________________________");
+        System.out.println("Building Call Graph starts...");
         System.out.println("Num of classes: "+this.ctModelCompleteWithTestAST.getAllTypes().size());
         System.out.println("Num of testclasses: "+(this.ctModelCompleteWithTestAST.getAllTypes().size() - this.ctModelOnlyMainAST.getAllTypes().size()));
         generatePackageList();
@@ -94,7 +91,6 @@ public class CallModel {
             }
             leftNodesToTraverse();
         }
-//        System.out.println("Finished building CallGraph...");
         return new CallGraphResult(this.callNodes,this.invocations);
     }
     /*
@@ -125,6 +121,9 @@ public class CallModel {
         }
         //searching ITree element for a method or Constructor
         else {
+            /*
+             * !!!!!!!!!!! Maybe also check Children????????? !!!!!!!!!!
+             */
             for(ITree t:iTree.breadthFirst()){
                 if(checkTypeMethod(t.getType()) &&checkLabel(searchName,t.getLabel()) &&checkTypeClass(t.getParent().getType())&&checkLabel(parentNameClassIfMethod,t.getParent().getLabel())){
 //                    System.out.println("ITree Element of "+searchName+ ": "+t.toShortString());
@@ -183,6 +182,7 @@ public class CallModel {
                         createAndAddInvocation(i,currNode, m.getSimpleName());
                     }
                 }
+                //Constructor calls are handled in CtAbstractInvocation
                 for(CtConstructorCall c:constructorCalls){
 //                    System.out.println("Constructor: "+c.getExecutable().getSimpleName());
                 }
@@ -283,15 +283,17 @@ public class CallModel {
     }
     private boolean checkQualifiedName(String qualifiedName){
         String packageNameGeneratedFromQualifiedName = generatePackageName(qualifiedName);
-//        int maxDots = countMaxDots();
         for(String packageName: this.packagesName){
             if(qualifiedName.startsWith(packageName)  && packageName.equals(packageNameGeneratedFromQualifiedName)){
-//                if(qualifiedName.startsWith(packageName) && checkNumDots(maxDots,packageName) && packageName.equals(packageNameGeneratedFromQualifiedName)){
                 return true;
             }
         }
         return false;
     }
+    /*
+     * Generates a List with all Package Names.
+     * Every Package Path is in this List.
+     */
     private void generatePackageList(){
         for(CtPackage ctPackage: this.ctModelCompleteWithTestAST.getAllPackages()){
             this.packagesName.add(ctPackage.getQualifiedName());
@@ -315,36 +317,6 @@ public class CallModel {
         }
 //        System.out.println(snew);
         return snew;
-    }
-
-    private int countMaxDots(){
-        int countDots = 0;
-        for(String packageName: this.packagesName){
-            if(packageName.contains(".")){
-                int num = getNumDotsInString(packageName);
-                if(num > countDots){
-                    countDots = num;
-                }
-            }
-        }
-        return countDots;
-    }
-    private boolean checkNumDots(int maxDots, String packageName){
-        int numDots = getNumDotsInString(packageName);
-        if(numDots > 2 && numDots <= maxDots - 1){
-            return true;
-        }else {
-            return false;
-        }
-    }
-    private int getNumDotsInString(String packageName){
-        int numDots = 0;
-        for(int i = 0; i<packageName.length();i++){
-            if(packageName.charAt(i)=='.'){
-                numDots++;
-            }
-        }
-        return numDots;
     }
     private String getMethodSignature(CtAbstractInvocation element){
         return element.getExecutable().getSimpleName();

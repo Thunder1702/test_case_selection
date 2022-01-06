@@ -38,7 +38,7 @@ public class ActionITreeAnalyze {
 
     public void analyzeActions(){
         int num = 0;
-        System.out.println("Analyze starts ...");
+        System.out.println("Action ITree Analyze starts ...");
 //        System.out.println("Number of Actions: "+this.actions.size());
         for(Action a: this.actions){
 //            System.out.println(num+") Node: "+a.getNode().toShortString());
@@ -163,7 +163,7 @@ public class ActionITreeAnalyze {
         if(!this.checkForTestList.isEmpty()){
             System.out.println("_______________________________CheckForTestList Start____________________________");
             this.checkForTestList.remove(null);
-            System.out.println(this.checkForTestList.size());
+            System.out.println("Number of detected changes after analyze: "+this.checkForTestList.size()+"\n");
             for(ITree tree: this.checkForTestList){
                 System.out.println("Method: "+tree.toShortString());
                 System.out.println("Class: "+tree.getParent().toShortString());

@@ -50,14 +50,14 @@ public class Main {
         List<Action> actions = actionGenerator.generate();
 
 //        actions.forEach(System.out::println);
-        System.out.println("______________________________________________________________");
-        System.out.println(actions.size());
+//        System.out.println("______________________________________________________________");
+        System.out.println("Number of actions: "+actions.size());
 
         ActionITreeAnalyze actionITreeAnalyze  = new ActionITreeAnalyze(iTreeBuilder.getRootSpoonRight(),iTreeBuilder.getRootSpoonLeft(), actions, matcher);
         actionITreeAnalyze.analyzeActions();
+        System.out.println("Action ITree Analyze finished...");
         actionITreeAnalyze.printCheckForTestList();
         Set<ITree> testCheckList = actionITreeAnalyze.getCheckForTestList();
-        System.out.println(testCheckList.size());
 
         GraphMethodSearcher graphMethodSearcher = new GraphMethodSearcher(testCheckList,callGraphResult,ctModelsBuild.getOnlyTestMethods());
         Set<ResultTuple> resultTupleList = graphMethodSearcher.searchInCallGraph();
@@ -65,11 +65,13 @@ public class Main {
         for(ResultTuple r: resultTupleList){
             System.out.println("Test Method "+r.getMethodName()+" in Class "+r.getClassName());
         }
-        System.out.println(resultTupleList.size());
+        System.out.println("\nNumber of test methods to run again: "+resultTupleList.size());
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime;
         long time = TimeUnit.MILLISECONDS.toSeconds(totalTime);
+        long timeMin = TimeUnit.MILLISECONDS.toMinutes(totalTime);
         System.out.println("Time[ms]: "+totalTime);
         System.out.println("Time[s]: "+time);
+        System.out.println("Time[min]: "+ timeMin);
     }
 }

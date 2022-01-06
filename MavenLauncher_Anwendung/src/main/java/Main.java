@@ -11,7 +11,6 @@ import com.github.gumtreediff.matchers.CompositeMatchers;
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
-import spoon.reflect.declaration.CtPackage;
 
 import java.util.List;
 import java.util.Set;

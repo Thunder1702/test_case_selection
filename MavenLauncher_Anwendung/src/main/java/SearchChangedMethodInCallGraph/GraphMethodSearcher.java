@@ -5,6 +5,7 @@ import CallGraph.CallGraphResult;
 import CallGraph.Invocation;
 import com.github.gumtreediff.tree.ITree;
 import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ public class GraphMethodSearcher {
         System.out.println("Searching for Test-Methods to run again...");
         System.out.println("TestMethods in Project: "+ this.testMethods.size());
         for(ITree iTree: this.checkForTest){
+//            System.out.println("ITree element: "+iTree.toShortString());
             resultList = checkMethodSignature(iTree);
             if(resultList!=null){
                 for(ResultTuple tuple : resultList){
@@ -46,7 +48,10 @@ public class GraphMethodSearcher {
     private List<ResultTuple> checkMethodSignature(ITree iTree){
         List<ResultTuple> temp = new ArrayList<>();
         for(Invocation i: this.callGraphResult.getAllInvocations()){
-            if(checkTypeMethod(iTree.getType()) && i.getMethodSignature().equals(iTree.getLabel()) &&i.getDeclaringType().equals(iTree.getParent().getLabel()) && checkIfTestMethod(i.getParentMethodSignature())){
+            if(checkTypeMethod(iTree.getType()) && i.getMethodSignature().equals(iTree.getLabel()) &&i.getDeclaringType().equals(iTree.getParent().getLabel()) && checkIfTestMethod(i.getParentMethodSignature(), i.getParentNode().getClassName())){
+//                System.out.println("parentNode: "+i.getParentNode().getClassName());
+//                System.out.println("iTree: "+iTree.toShortString());
+//                System.out.println("iTree Parent: "+iTree.getParent().toShortString());
                 temp.add(new ResultTuple(i.getParentNode().getClassName(),i.getParentMethodSignature()));
 //                return new ResultTuple(i.getParentNode().getClassName(),i.getParentMethodSignature());
             }
@@ -79,13 +84,20 @@ public class GraphMethodSearcher {
     private void removeNulls(){
         this.testMethodsToRunAgain.remove(null);
     }
-    private boolean checkIfTestMethod(String methodName){
+    private boolean checkIfTestMethod(String methodName, String parentClassName){
         for(Object o: this.testMethods){
             CtMethod method = (CtMethod) o;
-            if(method.getSimpleName().equals(methodName)){
+            CtType clazz = (CtType) method.getParent();
+            if(method.getSimpleName().equals(methodName) && checkParentOfTestMethod(parentClassName,clazz.getSimpleName())){
+//            if(method.getSimpleName().equals(methodName)){
+//                System.out.println("Method.getSimpleName(): "+method.getSimpleName()+" == methodName: "+methodName);
+//                System.out.println("Parent of method: "+clazz.getSimpleName());
                 return true;
             }
         }
         return false;
+    }
+    private boolean checkParentOfTestMethod(String parentClassName,String parentMethodClassName){
+        return parentClassName.equals(parentMethodClassName);
     }
 }

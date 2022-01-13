@@ -2,9 +2,11 @@ package ActionChangeAnalyze;
 
 import spoon.MavenLauncher;
 import spoon.reflect.CtModel;
+import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 
 public class MavenLauncherCtModelsBuild {
@@ -66,10 +68,27 @@ public class MavenLauncherCtModelsBuild {
         for(CtType clazz: this.onlyTest.getAllTypes()){
             for(Object o: clazz.getMethods()){
                 CtMethod method = (CtMethod) o;
-                this.onlyTestMethods.add(method);
+                if(isTestMethod(method)){
+                    this.onlyTestMethods.add(method);
+                }
             }
         }
     }
+//    if(type!=null && type.getPosition()!=null && type.getPosition().getCompilationUnit()!=null && type.getPosition().getCompilationUnit().getFile()!=null) {
+//        if (type.getPosition().getCompilationUnit().getFile().getAbsolutePath().contains("src" + File.separator + "test" + File.separator + "java")) {
+//            testClasses.add(type);
+//        }
+//    }
+private static boolean isTestMethod(CtMethod method) {
+    for (CtAnnotation<? extends Annotation> annotation : method.getAnnotations()) {
+        if(annotation.getName().equals("Test")) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
     public ArrayList getOnlyTestMethods() {
         return onlyTestMethods;
     }

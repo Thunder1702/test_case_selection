@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class CallModel {
     private final CtModel ctModelOnlyMainAST;
@@ -56,6 +57,7 @@ public class CallModel {
      *
      */
     public CallGraphResult analyze(){
+        long startTime = System.currentTimeMillis();
         System.out.println("_______________________________________________________________________________________________________");
         System.out.println("Building Call Graph starts...");
         System.out.println("Num of classes: "+this.ctModelCompleteWithTestAST.getAllTypes().size());
@@ -64,15 +66,17 @@ public class CallModel {
         for(CtType completeClazz: this.ctModelCompleteWithTestAST.getAllTypes()){
             if(filterTests(completeClazz)){
                 //getSimpleName() --> only class Name without Packages.
-//                System.out.println("____________Analyze TestClazz: "+completeClazz.getSimpleName()+"____________");
                 CallNode root = new CallNode(completeClazz.getSimpleName(),null,findITreeElement(this.iTreeOfModel,completeClazz.getSimpleName(),true,""));
                 this.rootNodes.add(root);
                 this.callNodes.add(root);
-//                System.out.println("1) Create root Node: "+root.getClassName());
                 searchForInvocation(completeClazz,root);
-//                System.out.println("______________Finish Analyze TestClazz: "+completeClazz.getSimpleName()+"__________\n");
             }
         }
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+        long time = TimeUnit.MILLISECONDS.toSeconds(totalTime);
+        System.out.println("Call Graph root Nodes: Time[ms]: "+totalTime);
+        System.out.println("Call Graph root Nodes: Time[s]: "+time);
         return leftNodesToTraverse();
     }
 
@@ -109,7 +113,6 @@ public class CallModel {
      * Maybe split into findITreeElementClass and findITreeElementMethod and findITreeElementConstructor?
      */
     private ITree findITreeElement(ITree iTree,String searchName, boolean isClass, String parentNameClassIfMethod){
-//        System.out.println("searchName: "+searchName+"\n isClass: "+isClass+"\n parentNameClassIfMethod: "+parentNameClassIfMethod);
         //searching ITree element for a class
         if(isClass){
             for(ITree t: iTree.breadthFirst()){
@@ -162,9 +165,7 @@ public class CallModel {
     private boolean checkTypeConstructor(int type){ return  type==types.getTypeConstructor();}
 
     private void searchForInvocation(CtType clazz, CallNode currNode){
-//        System.out.println("2) Search for Invocation in class: "+clazz.getSimpleName()+"; currNode: "+currNode.getClassName());
         Set<CtMethod> methods = clazz.getMethods();
-//        System.out.println("Methods found in clazz: "+clazz.getSimpleName());
         for(CtMethod m: methods){
 //            System.out.println("Method: "+m.getSimpleName());
             List<CtAbstractInvocation> methodCalls = m.getElements(new TypeFilter<>(CtAbstractInvocation.class));
@@ -192,12 +193,9 @@ public class CallModel {
     private boolean checkDeclaringType(CtAbstractInvocation i){
         CtTypeReference fromType = i.getExecutable().getDeclaringType();
         if(fromType==null){
-//            System.out.println("fromType is null");
             return false;
         }
-//        else{
-//            System.out.println("Qualified name: "+fromType.getQualifiedName());
-//        }
+//      System.out.println("Qualified name: "+fromType.getQualifiedName());
         return !isPartOfJDK(fromType.getQualifiedName()) && checkQualifiedName(fromType.getQualifiedName());
 
     }
@@ -207,18 +205,14 @@ public class CallModel {
      * String parentMethodSignature = Name of Method in which CtAbstractInvocation i is used(called)
      */
     private void createAndAddInvocation(CtAbstractInvocation i, CallNode currNode, String parentMethodSignature){
-//        System.out.println("\n3) Create Invocation of method "+getMethodSignature(i));
 //        System.out.println("currNode: "+currNode.getClassName());
-
         Invocation invocation = new Invocation(getMethodSignature(i),getMethodDeclaringType(i),currNode,findITreeElement(this.iTreeOfModel,getMethodSignature(i),false, getMethodDeclaringType(i)), parentMethodSignature);
         invocation.setNextNode(createNextNode(getMethodDeclaringType(i),currNode));
         this.invocations.add(invocation);
         currNode.addInvocation(invocation);
     }
     private CallNode createNextNode(String declaringType, CallNode currNode){
-//        System.out.println("\n4) Create nextNode...");
         CallNode nextNode = new CallNode(declaringType,currNode,findITreeElement(this.iTreeOfModel,declaringType,true,""));
-//        System.out.println("nextNode: "+nextNode.getClassName()+" previous of nextNode: "+ nextNode.getPrevious().getClassName());
         if(!checkForDuplicateNodeInList(nextNode) && !checkInvocationToItself(declaringType,currNode) && !checkForDuplicateNodeInOutputList(nextNode)){
             this.nodesToTraverse.add(nextNode);
         }
@@ -228,7 +222,7 @@ public class CallModel {
         return nextNode;
     }
     private boolean checkForDuplicateNodeInList(CallNode node){
-//        System.out.println("5) Check for duplicate Node in List(nodesToTraverse)");
+        //this.nodesToTraverse.contains(node); ???????????
         for(CallNode clazz: this.nodesToTraverse){
             //vielleicht nur className checken, wenn die Klasse schon vorkommt nicht nochmal durchgehen?
             if(checkClassName(clazz,node) && checkITreeElement(clazz,node) && checkPreviousNode(clazz,node)){
@@ -283,6 +277,7 @@ public class CallModel {
     }
     private boolean checkQualifiedName(String qualifiedName){
         String packageNameGeneratedFromQualifiedName = generatePackageName(qualifiedName);
+        //this.packagesName.contains(packageNameGeneratedFromQualifiedName); ???????
         for(String packageName: this.packagesName){
             if(qualifiedName.startsWith(packageName)  && packageName.equals(packageNameGeneratedFromQualifiedName)){
                 return true;

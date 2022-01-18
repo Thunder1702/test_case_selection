@@ -73,4 +73,16 @@ public class Invocation {
     public String getParentMethodSignature(){
         return this.parentMethodSignature;
     }
+
+    @Override
+    public String toString() {
+        return "Invocation{" +
+                "methodSignature='" + methodSignature + '\'' +
+                ", declaringType=" + declaringType + '\'' +
+                ", parentNodeClassName=" + parentNode.getClassName() + '\'' +
+                ", iTreeNodeMethod=" + iTreeNodeMethod.toShortString() + '\'' +
+                ", nextNodeClassName=" + nextNode.getClassName() + '\'' +
+                ", parentMethodSignature=" + parentMethodSignature + '\'' +
+                '}';
+    }
 }

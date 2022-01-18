@@ -224,9 +224,11 @@ public class ActionITreeAnalyze {
 
     private boolean checkChildren(ITree t, ITree searchNode){
         int sizeT = t.getChildren().size();
+        List<ITree> list_t = t.getChildren();
+        List<ITree> list_searchNode = searchNode.getChildren();
         if(t.getChildren().size()==searchNode.getChildren().size()){
-            for(ITree child:t.getChildren()){
-                for(ITree childSearchNode: searchNode.getChildren()){
+            for(ITree child:list_t){
+                for(ITree childSearchNode: list_searchNode){
                     if(checkNodes(child,childSearchNode)){
                         sizeT--;
                     }
